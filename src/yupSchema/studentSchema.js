@@ -1,0 +1,16 @@
+import * as yup from 'yup';
+
+export const studentSchema = yup.object({
+    name: yup.string().min(4, "Name must contain 4 characters").required("Name is required"),
+    email: yup.string().email("It must be an Email.").min(4, "email must contain 4 characters").required("email is required"),
+    student_class: yup.string("Student Class must be string value.").required("Select A Class || Add New Class & Select."),
+    section: yup.string("Student Section must be string value.").required("Select A Section || Add New Section & Select."),
+    parent: yup.string("Student Parent must be string value.").required("Select A Parent || Add New Parent & Select."),
+    gender: yup.string("Gender must be string value.").required("You must select a Gender."),
+    age: yup.number("Age must be a number.").required("You must give Age."),
+    guardian_phone: yup.string().min(10, "Phone must contain 10 characters").required("Phone is required"),
+    dOBDate: yup.string().min(4, "dOBDate must contain 4 characters").required("dOBDate is required"),
+    joinDate: yup.string().min(4, "joinDate must contain 4 characters").required("joinDate is required"),
+    year: yup.string().required("Year is required"),
+    password: yup.string().required("Password is a required field."),
+})
