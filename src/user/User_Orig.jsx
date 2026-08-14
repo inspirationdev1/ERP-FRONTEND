@@ -272,7 +272,7 @@ export default function User_Orig() {
                             transform: "translateX(-50%)",
                         }}
                     >
-                        School Management System
+                        Business Management System
                     </Typography>
 
                 </Toolbar>

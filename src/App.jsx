@@ -19,34 +19,41 @@ import Register from "./client/components/register/Register";
 
 import Logout from "./client/components/logout/Logout";
 import School from "./school/School";
+import Company from "./company/Company";
 import SchoolDashboard from "./school/components/dashboard/SchoolDashboard";
+import CompanyDashboard from "./company/components/dashboard/CompanyDashboard";
 import UserDashboard from "./user/components/dashboard/UserDashboard";
 import Class from "./school/components/class/Class";
 import Students from "./school/components/students/Students";
+import Customers from "./company/components/customers/Customers";
+import Suppliers from "./company/components/suppliers/Suppliers";
 import Teachers from "./school/components/teachers/Teachers";
-import Employees from "./school/components/employees/Employees";
+import Employees from "./company/components/employees/Employees";
 import Parents from "./school/components/parents/Parents";
-import Users from "./school/components/users/Users";
+import Users from "./company/components/users/Users";
 import Subject from "./school/components/subjects/Subjects";
 import Section from "./school/components/sections/Sections";
 import Department from "./school/components/departments/Departments";
 import Feestype from "./school/components/feestypes/Feestypes";
+import Itemtype from "./company/components/itemtypes/Itemtypes";
+import Item from "./company/components/items/Items";
 import Feestructure from "./school/components/feestructures/Feestructures";
 // import Examtype from "./school/components/examtypes/Examtypes";
-import Salesinvoice from "./school/components/salesinvoices/Salesinvoices";
-import SalesinvoicePrint from "./school/components/salesinvoices/SalesinvoicePrint";
-import Receipts from "./school/components/receipts/Receipts";
-import ReceiptPrint from "./school/components/receipts/ReceiptPrint";
-import ReceiptPrint_MMS from "./school/components/receipts/ReceiptPrint_MMS";
+import Salesinvoice from "./company/components/salesinvoices/Salesinvoices";
+import SalesinvoicePrint from "./company/components/salesinvoices/SalesinvoicePrint";
+import Receipts from "./company/components/receipts/Receipts";
+import ReceiptPrint from "./company/components/receipts/ReceiptPrint";
+import ReceiptPrint_MMS from "./company/components/receipts/ReceiptPrint_MMS";
 
-import Expensetypes from "./school/components/expensetypes/Expensetypes";
-import Expenses from "./school/components/expenses/Expenses";
-import Generalmasters from "./school/components/generalmasters/Generalmasters";
+import Expensetypes from "./company/components/expensetypes/Expensetypes";
+import Expenses from "./company/components/expenses/Expenses";
+import Generalmasters from "./company/components/generalmasters/Generalmasters";
 
-import Journalvouchers from "./school/components/journalvouchers/Journalvouchers";
+import Journalvouchers from "./company/components/journalvouchers/Journalvouchers";
 
-import Accountlevels from "./school/components/accountlevels/Accountlevels";
-import Accountledgers from "./school/components/acountledgers/Accountledgers";
+import Geolocations from "./company/components/geolocations/Geolocations";
+import Accountlevels from "./company/components/accountlevels/Accountlevels";
+import Accountledgers from "./company/components/acountledgers/Accountledgers";
 
 import Marksheet from "./school/components/marksheets/Marksheets";
 import MarksheetPrint from "./school/components/marksheets/MarksheetPrint";
@@ -54,9 +61,9 @@ import MarksheetPrint from "./school/components/marksheets/MarksheetPrint";
 import ClassDetails from "./school/components/class details/ClassDetails";
 import StudentDetails from "./student/components/student details/StudentDetails";
 import Student from "./student/Student";
-import Menu from "./school/components/menu/Menu";
-import Role from "./school/components/role/Role";
-import Screen from "./school/components/screen/Screen";
+import Menu from "./company/components/menu/Menu";
+import Role from "./company/components/role/Role";
+import Screen from "./company/components/screen/Screen";
 
 import ParentDetails from "./parent/components/parent details/ParentDetails";
 import Parent from "./parent/Parent";
@@ -117,20 +124,23 @@ import StatementOfAccountLedgerReportPrint from "./school/components/reports/Sta
 import StudentListReportPrint from "./school/components/reports/StudentListReportPrint";
 import ParentListReportPrint from "./school/components/reports/ParentListReportPrint";
 
-import StaffReports from "./school/components/reports/StaffReports";
+import StaffReports from "./company/components/reports/StaffReports";
 import TeacherListReportPrint from "./school/components/reports/TeacherListReportPrint";
-import EmployeeListReportPrint from "./school/components/reports/EmployeeListReportPrint";
+import EmployeeListReportPrint from "./company/components/reports/EmployeeListReportPrint";
 
 import StudentReports from "./school/components/reports/StudentReports";
 import AttendanceReportPrint from "./school/components/reports/AttendanceReportPrint";
 import PendingFeesReportPrint from "./school/components/reports/PendingFeesReportPrint";
 import PaidFeesReportPrint from "./school/components/reports/PaidFeesReportPrint";
-import Payments from "./school/components/payments/Payments";
-import PaymentPrint from "./school/components/payments/PaymentPrint";
-import PendingExpensesReportPrint from "./school/components/reports/PendingExpensesReportPrint";
-import PaidExpensesReportPrint from "./school/components/reports/PaidExpensesReportPrint";
-import Numberseqs from "./school/components/numberseqs/Numberseqs";
-import Appsettings from "./school/components/appsettings/Appsettings";
+import Purchaseinvoice from "./company/components/purchaseinvoices/Purchaseinvoices";
+import PurchaseinvoicePrint from "./company/components/purchaseinvoices/PurchaseinvoicePrint";
+
+import Payments from "./company/components/payments/Payments";
+import PaymentPrint from "./company/components/payments/PaymentPrint";
+import PendingExpensesReportPrint from "./company/components/reports/PendingExpensesReportPrint";
+import PaidExpensesReportPrint from "./company/components/reports/PaidExpensesReportPrint";
+import Numberseqs from "./company/components/numberseqs/Numberseqs";
+import Appsettings from "./company/components/appsettings/Appsettings";
 import Periods from "./school/components/periods/Periods";
 import ScheduleReportPrint from "./school/components/periods/ScheduleReportPrint";
 import TeacherScheduleReportPrint from "./teacher/components/periods/TeacherScheduleReportPrint";
@@ -171,6 +181,7 @@ function App() {
         {/* <ThemeToggleButton /> */}
         <BrowserRouter>
           <Routes>
+            {/* School */}
             <Route
               path="school"
               element={
@@ -247,7 +258,7 @@ function App() {
 
               <Route path="numberseq" element={<Numberseqs />} />
               <Route path="appsetting" element={<Appsettings />} />
-              <Route path="generalmaster" element={<Generalmasters />} />
+              {/* <Route path="generalmaster" element={<Generalmasters />} /> */}
               <Route path="workingdays" element={<Workingdays />} />
               <Route path="classsubject" element={<Classsubject />} />
 
@@ -394,6 +405,117 @@ function App() {
               <Route path="notice" element={<NoticeSchool />} />
             </Route>
 
+            {/* Company */}
+            <Route
+              path="company"
+              element={
+                <ProtectedRoute allowedRoles={["COMPANY", "USER"]}>
+                  <Company />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<CompanyDashboard />} />
+              <Route path="department" element={<Department />} />
+              <Route path="itemtype" element={<Itemtype />} />
+              <Route path="item" element={<Item />} />
+              <Route path="salesinvoice" element={<Salesinvoice />} />
+              <Route path="salesinvoiceprint" element={<SalesinvoicePrint />} />
+              <Route path="receipt" element={<Receipts />} />
+              <Route path="receiptprint" element={<ReceiptPrint />} />
+              <Route path="receiptprint_mms" element={<ReceiptPrint_MMS />} />
+              <Route path="purchaseinvoice" element={<Purchaseinvoice />} />
+              <Route
+                path="purchaseinvoiceprint"
+                element={<PurchaseinvoicePrint />}
+              />
+              <Route path="payment" element={<Payments />} />
+              <Route path="paymentprint" element={<PaymentPrint />} />
+              <Route path="expensetype" element={<Expensetypes />} />
+              <Route path="expense" element={<Expenses />} />
+              <Route path="expenseprint" element={<ExpensePrint />} />
+
+              <Route path="journalvoucher" element={<Journalvouchers />} />
+              <Route
+                path="journalvoucherprint"
+                element={<JournalvoucherPrint />}
+              />
+
+              <Route path="geolocation" element={<Geolocations />} />
+              <Route path="accountlevel" element={<Accountlevels />} />
+              <Route path="accountledger" element={<Accountledgers />} />
+              <Route path="accountsetup" element={<Accountsetups />} />
+
+              <Route path="customers" element={<Customers />} />
+              <Route path="suppliers" element={<Suppliers />} />
+              <Route path="employees" element={<Employees />} />
+              <Route path="users" element={<Users />} />
+
+              <Route path="menu" element={<Menu />} />
+              <Route path="role" element={<Role />} />
+              <Route path="screen" element={<Screen />} />
+
+              <Route path="numberseq" element={<Numberseqs />} />
+              <Route path="appsetting" element={<Appsettings />} />
+              <Route path="generalmaster" element={<Generalmasters />} />
+              <Route path="workingdays" element={<Workingdays />} />
+
+              <Route path="uploaddata" element={<Uploaddata />} />
+              <Route path="sendwhatsapp" element={<Sendwhatsapp />} />
+
+              <Route path="taxrates" element={<Taxrates />} />
+
+              <Route path="financereports" element={<FinanceReports />} />
+              <Route
+                path="financereportsprint"
+                element={<FinanceReportsPrint />}
+              />
+              <Route
+                path="expensereportprint"
+                element={<ExpenseReportPrint />}
+              />
+              <Route path="incomereportprint" element={<IncomeReportPrint />} />
+
+              <Route
+                path="chartofaccountreportprint"
+                element={<ChartOfAccountReportPrint />}
+              />
+
+              <Route
+                path="trialbalancereportprint"
+                element={<TrialBalanceReportPrint />}
+              />
+              <Route
+                path="profitorlossreportprint"
+                element={<ProfitOrLossReportPrint />}
+              />
+              <Route
+                path="balancesheetreportprint"
+                element={<BalanceSheetReportPrint />}
+              />
+
+              <Route
+                path="statementofaccountstudentreportprint"
+                element={<StatementOfAccountStudentReportPrint />}
+              />
+              <Route
+                path="statementofaccountledgerreportprint"
+                element={<StatementOfAccountLedgerReportPrint />}
+              />
+
+              <Route
+                path="employeelistreportprint"
+                element={<EmployeeListReportPrint />}
+              />
+
+              <Route
+                path="paidexpensesreportprint"
+                element={<PaidExpensesReportPrint />}
+              />
+
+              <Route path="notice" element={<NoticeSchool />} />
+            </Route>
+
+            {/* Student */}
             <Route
               path="student"
               element={
@@ -433,6 +555,7 @@ function App() {
               <Route path="notice" element={<NoticeStudent />} />
             </Route>
 
+            {/* Teacher */}
             <Route
               path="teacher"
               element={
@@ -485,6 +608,7 @@ function App() {
               <Route path="progresscardprint" element={<ProgressCardPrint />} />
             </Route>
 
+            {/* Client */}
             <Route path="/" element={<Client />}>
               <Route index element={<Home />} />
               <Route path="home" element={<Home />} />
@@ -495,6 +619,7 @@ function App() {
               <Route path="logout" element={<Logout />} />
             </Route>
 
+            {/* Parent */}
             <Route
               path="parent"
               element={
@@ -533,6 +658,7 @@ function App() {
               <Route path="notice" element={<NoticeParent />} />
             </Route>
 
+            {/* User */}
             <Route
               path="user"
               element={

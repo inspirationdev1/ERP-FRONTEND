@@ -1,6 +1,3 @@
-
-
-
 // // Carousel.js
 // import React, { useState } from 'react';
 // import SwipeableViews from 'react-swipeable-views';
@@ -90,7 +87,6 @@
 
 // export default Carousel;
 
-
 // Carousel.js
 import React, { useRef } from "react";
 import { Typography, Box, Button } from "@mui/material";
@@ -100,29 +96,48 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
+// const carouselItems = [
+//   {
+//     image:
+//       "https://cdn.pixabay.com/photo/2020/12/10/20/40/color-5821297_1280.jpg",
+//     title: "Explore Our Classrooms",
+//     description: "Engaging and inspiring environments for every student.",
+//   },
+//   {
+//     image:
+//       "https://cdn.pixabay.com/photo/2017/10/10/00/03/child-2835430_1280.jpg",
+//     title: "Empowering Students",
+//     description: "We believe in fostering the potential of each child.",
+//   },
+//   {
+//     image:
+//       "https://cdn.pixabay.com/photo/2019/09/03/01/51/child-4448370_1280.jpg",
+//     title: "Learning Tools",
+//     description: "Providing the right tools for effective learning.",
+//   },
+// ];
+
 const carouselItems = [
   {
     image:
-      "https://cdn.pixabay.com/photo/2020/12/10/20/40/color-5821297_1280.jpg",
-    title: "Explore Our Classrooms",
-    description: "Engaging and inspiring environments for every student.",
+      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1600&q=80",
+    title: "Modern Workplace",
+    description: "Creating innovative solutions for businesses worldwide.",
   },
   {
     image:
-      "https://cdn.pixabay.com/photo/2017/10/10/00/03/child-2835430_1280.jpg",
-    title: "Empowering Students",
-    description: "We believe in fostering the potential of each child.",
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1600&q=80",
+    title: "Expert Team",
+    description: "Collaboration and expertise that drive successful outcomes.",
   },
   {
     image:
-      "https://cdn.pixabay.com/photo/2019/09/03/01/51/child-4448370_1280.jpg",
-    title: "Learning Tools",
-    description: "Providing the right tools for effective learning.",
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=80",
+    title: "Business Excellence",
+    description: "Delivering reliable services with a customer-first approach.",
   },
 ];
-
 const Carousel = () => {
-
   const swiperRef = useRef(null);
 
   const handleNext = () => {
@@ -135,12 +150,7 @@ const Carousel = () => {
 
   return (
     <Box sx={{ position: "relative", width: "100%" }}>
-
-      <Swiper
-        ref={swiperRef}
-        slidesPerView={1}
-        loop={true}
-      >
+      <Swiper ref={swiperRef} slidesPerView={1} loop={true}>
         {carouselItems.map((item, index) => (
           <SwiperSlide key={index}>
             <Box
@@ -208,10 +218,8 @@ const Carousel = () => {
           <ArrowForwardIosIcon />
         </Button>
       </Box>
-
     </Box>
   );
 };
 
 export default Carousel;
-

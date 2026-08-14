@@ -286,7 +286,7 @@ export default function User() {
               textOverflow: "ellipsis",
             }}
           >
-            {isMobile ? "SMS" : "School Management System"}
+            {isMobile ? "SMS" : "Business Management System"}
           </Typography> */}
 
           {/* CENTER LOGO + TITLE */}
@@ -311,7 +311,7 @@ export default function User() {
                 fontSize: { xs: 16, md: 20 },
               }}
             >
-              {isMobile ? "SMS" : "School Management System"}
+              {isMobile ? "SMS" : "Business Management System"}
             </Typography>
             {/* Logo */}
             <Box
@@ -335,7 +335,7 @@ export default function User() {
                 fontSize: { xs: 16, md: 20 },
               }}
             >
-              {isMobile ? "SMS" : "School Management System"}
+              {isMobile ? "SMS" : "Business Management System"}
             </Typography> */}
           </Box>
 

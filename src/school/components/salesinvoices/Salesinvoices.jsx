@@ -33,7 +33,7 @@ import SalesinvoicePrint from "./SalesinvoicePrint";
 export default function Salesinvoice() {
   const [isDataValid, setIsDataValid] = useState(true);
   const [dataError, setDataError] = useState("");
-  const [studentSalesinvoice, setStudentSalesinvoice] = useState([]);
+  const [customerSalesinvoice, setCustomerSalesinvoice] = useState([]);
   const [isEdit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
   const [date, setDate] = useState(new Date());
@@ -41,17 +41,17 @@ export default function Salesinvoice() {
   const [isPrint, setPrint] = useState(false);
   const [printId, setPrintId] = useState(null);
 
-  const [students, setStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const [appsettings, setAppsettings] = useState([]);
   const [selectedAppsetting, setSelectedAppsetting] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [attendeeClass, setAttendeeClass] = useState([]);
-  const [selectedClass, setSelectedClass] = useState(null);
-  const [section, setSection] = useState([]);
-  const [selectedSection, setSelectedSection] = useState(null);
+
+  const [geolocation, setGeolocation] = useState([]);
+  const [selectedGeolocation, setSelectedGeolocation] = useState(null);
   const [feestructure, setFeestructure] = useState([]);
   const [selectedFeestructure, setSelectedFeestructure] = useState(null);
   const [allFeestructure, setAllFeestructure] = useState([]);
@@ -155,10 +155,9 @@ export default function Salesinvoice() {
           "invoiceTime",
           dayjs().format("YYYY-MM-DD HH:mm:ss"),
         );
-        Formik.setFieldValue("class", resp.data.data.class);
-        Formik.setFieldValue("section", resp.data.data.section);
-        Formik.setFieldValue("student", resp.data.data.student);
-        Formik.setFieldValue("student_name", resp.data.data?.student_name);
+        Formik.setFieldValue("geolocation", resp.data.data.geolocation);
+        Formik.setFieldValue("customer", resp.data.data.customer);
+        Formik.setFieldValue("customer_name", resp.data.data?.customer_name);
         // Formik.setFieldValue("paymentStatus", resp.data.data.paymentStatus);
         Formik.setFieldValue("status", resp.data.data.status);
         Formik.setFieldValue("year", resp.data.data.year);
@@ -178,15 +177,16 @@ export default function Salesinvoice() {
 
         Formik.setFieldValue("remarks", resp.data.data.remarks);
         const classId = resp.data.data?.class || resp.data.class;
-        const sectionId = resp.data.data?.section || resp.data.section;
-        const studentId = resp.data.data?.student || resp.data.student;
-        const matchedClass = attendeeClass.find((c) => c._id === classId);
-        const matchedSection = section.find((s) => s._id === sectionId);
-        const matchedStudent = students.find((s) => s._id === studentId);
+        const geolocationId =
+          resp.data.data?.geolocation || resp.data.geolocation;
+        const customerId = resp.data.data?.customer || resp.data.customer;
+        const matchedGeolocation = geolocation.find(
+          (s) => s._id === geolocationId,
+        );
+        const matchedCustomer = customers.find((s) => s._id === customerId);
 
-        setSelectedClass(matchedClass || null);
-        setSelectedSection(matchedSection || null);
-        setSelectedStudent(matchedStudent || null);
+        setSelectedGeolocation(matchedGeolocation || null);
+        setSelectedCustomer(matchedCustomer || null);
         setEditId(resp.data.data._id);
 
         const editInvoiceDetails = resp.data.data.invoiceDetails.map((row) => ({
@@ -236,9 +236,8 @@ export default function Salesinvoice() {
     setEditId(null);
     Formik.resetForm();
     // 🔥 reset Autocomplete values
-    setSelectedClass(null);
-    setSelectedSection(null);
-    setSelectedStudent(null);
+    setSelectedGeolocation(null);
+    setSelectedCustomer(null);
     setSelectedYear(null);
     setSelectedMonth(null);
     setIsDataValid(true);
@@ -251,9 +250,8 @@ export default function Salesinvoice() {
     setEditId(null);
     Formik.resetForm();
     // 🔥 reset Autocomplete values
-    setSelectedClass(null);
-    setSelectedSection(null);
-    setSelectedStudent(null);
+    setSelectedGeolocation(null);
+    setSelectedCustomer(null);
     setSelectedYear(null);
     setSelectedMonth(null);
     clearInvoiceDetails();
@@ -272,9 +270,9 @@ export default function Salesinvoice() {
     invoiceDate: "",
     invoiceTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
     class: "",
-    section: "",
-    student: "",
-    student_name: "",
+    geolocation: "",
+    customer: "",
+    customer_name: "",
     status: "valid",
     remarks: "",
     month: "",
@@ -401,7 +399,7 @@ export default function Salesinvoice() {
           taxable_amount: row?.taxable_amount || 0,
           taxrate: row?.taxrate || null,
           remarks: "",
-          student: values.student,
+          customer: values.customer,
           year: values.year,
           month: values?.month || 1,
           monthname: values?.monthname || "January",
@@ -450,11 +448,11 @@ export default function Salesinvoice() {
   const [month, setMonth] = useState([]);
   const [year, setYear] = useState([]);
 
-  const fetchstudentssalesinvoice = () => {
+  const fetchcustomerssalesinvoice = () => {
     axios
       .get(`${baseUrl}/salesinvoice/fetch-with-query`, { params })
       .then((resp) => {
-        setStudentSalesinvoice(resp.data.data);
+        setCustomerSalesinvoice(resp.data.data);
       })
       .catch(() => console.log("Error in fetching salesinvoices data"));
   };
@@ -473,56 +471,27 @@ export default function Salesinvoice() {
       });
   };
 
-  const fetchClass = async () => {
+  const fetchGeolocation = async () => {
     try {
-      const attendee = await axios.get(`${baseUrl}/class/fetch-all`);
-      console.log("attendee", attendee);
-      setAttendeeClass(attendee.data.data);
+      const geolocations = await axios.get(`${baseUrl}/geolocation/fetch-all`);
+      console.log("geolocations", geolocations);
+      setGeolocation(geolocations.data.data);
     } catch (error) {
-      console.error("Error fetching students or checking attendance:", error);
-    }
-  };
-  const fetchSection = async () => {
-    try {
-      const sections = await axios.get(`${baseUrl}/section/fetch-all`);
-      console.log("sections", sections);
-      setSection(sections.data.data);
-    } catch (error) {
-      console.error("Error fetching students or checking attendance:", error);
+      console.error("Error fetching customers or checking attendance:", error);
     }
   };
 
-  const fetchStudents = async () => {
+  const fetchCustomers = async () => {
     try {
-      const studentsResponse = await axios.get(
-        `${baseUrl}/student/fetch-with-query`,
+      const customersResponse = await axios.get(
+        `${baseUrl}/customer/fetch-with-query`,
         {
-          params: {
-            student_class: selectedClass?._id,
-            section: selectedSection?._id,
-          },
+          params: {},
         },
       ); // Fetch based on class
-      setStudents(studentsResponse.data.data);
+      setCustomers(customersResponse.data.data);
     } catch (error) {
-      console.error("Error fetching students or checking attendance:", error);
-    }
-  };
-
-  const fetchFeeStructures = async () => {
-    try {
-      if (!selectedClass?._id) return;
-      const feestrucureResponse = await axios.get(
-        `${baseUrl}/feestructure/fetch-with-query`,
-        {
-          params: {
-            class: selectedClass?._id,
-          },
-        },
-      ); // Fetch based on class
-      setFeestructure(feestrucureResponse.data.data);
-    } catch (error) {
-      console.error("Error fetching students or checking attendance:", error);
+      console.error("Error fetching customers or checking attendance:", error);
     }
   };
 
@@ -533,28 +502,21 @@ export default function Salesinvoice() {
       ); // Fetch All Feestructures
       setAllFeestructure(allFeestrucureResponse.data.data);
     } catch (error) {
-      console.error("Error fetching students or checking attendance:", error);
+      console.error("Error fetching customers or checking attendance:", error);
     }
   };
 
   useEffect(() => {
     fetchAppsettings();
-    fetchstudentssalesinvoice();
+    fetchcustomerssalesinvoice();
 
-    fetchClass();
-    fetchSection();
-    fetchAllFeeStructures();
+    fetchGeolocation();
+    // fetchAllFeeStructures();
   }, [message, params]);
 
   useEffect(() => {
-    if (selectedClass?._id) {
-      fetchFeeStructures();
-    }
-  }, [selectedClass]);
-
-  useEffect(() => {
-    fetchStudents();
-  }, [selectedClass, selectedSection]);
+    fetchCustomers();
+  }, [selectedClass, selectedGeolocation]);
 
   useEffect(() => {
     console.log("invoiceDetails:", invoiceDetails);
@@ -683,91 +645,6 @@ export default function Salesinvoice() {
     console.log(invoiceDetails);
   };
 
-  const createMultipleInvoice = () => {
-    try {
-      const payload = {
-        class: Formik.values.class,
-        section: Formik.values.section,
-        feestructure: Formik.values.feestructure,
-        feestructure_name: Formik.values.feestructure_name,
-        feestype: selectedFeestructure?.feestype?._id,
-        feeFrequency: Formik.values.feeFrequency,
-        feeAmount: Formik.values.feeAmount,
-        taxrate: selectedFeestructure?.taxrate?._id || null,
-        tax_percent: selectedFeestructure?.tax_percent || 0,
-        taxtype: selectedFeestructure?.taxrate?.taxtype || "inclusive",
-        feestructure_name: Formik.values.feestructure_name,
-        invoiceDate: Formik.values.invoiceDate,
-        year: Formik.values.year,
-        month: Formik.values.month,
-        monthname: Formik.values.monthname,
-        remarks: Formik.values.remarks,
-      };
-
-      if (!payload?.class) {
-        setMessage("Select Class");
-        setType("error");
-        return;
-      }
-      if (!payload?.section) {
-        setMessage("Select Section");
-        setType("error");
-        return;
-      }
-      if (!payload?.year) {
-        setMessage("Select Academic Year");
-        setType("error");
-        return;
-      }
-      if (!payload?.month) {
-        setMessage("Select For Month of");
-        setType("error");
-        return;
-      }
-      if (!payload?.invoiceDate) {
-        setMessage("Select Invoice date");
-        setType("error");
-        return;
-      }
-      if (!payload?.feestructure) {
-        setMessage("Select Feestructure");
-        setType("error");
-        return;
-      }
-      if (!payload?.feeFrequency) {
-        setMessage("Select feeFrequency");
-        setType("error");
-        return;
-      }
-      if (!payload?.feeAmount) {
-        setMessage("Select feeAmount");
-        setType("error");
-        return;
-      }
-
-      console.log(payload);
-
-      axios
-        .post(`${baseUrl}/salesinvoice/create-multiple-invoice`, payload)
-        .then((resp) => {
-          console.log("Response after submitting admin casting", resp);
-          setMessage(resp.data.message);
-          setType("success");
-        })
-        .catch((e) => {
-          setMessage(e.response.data.message);
-          setType("error");
-          console.log("Error, response admin casting calls", e);
-        });
-
-      setMessage("Multiple Invoice Created for the Students");
-      setType("success");
-    } catch (error) {
-      setMessage("Multiple Invoice Problem", error.message);
-      setType("success");
-    }
-  };
-
   const handleSearch = (e) => {
     let newParam;
     if (e.target.value !== "") {
@@ -800,7 +677,6 @@ export default function Salesinvoice() {
             {/* <Tab label="Create Receipt" /> */}
             <Tab label={isEdit ? "Edit Fees Invoice" : "Create Fees Invoice"} />
             <Tab label="View List" />
-            <Tab label="Create Multiple Invoice" />
           </Tabs>
         </Box>
 
@@ -952,110 +828,79 @@ export default function Salesinvoice() {
                       />
                     </Box>
 
-                    {/* Class */}
-                    {attendeeClass.length > 0 && (
+                    {/* Geolocation */}
+
+                    <Box>
+                      <Autocomplete
+                        disabled={isEdit}
+                        options={geolocation}
+                        getOptionLabel={(option) => option.geolocation_name}
+                        value={selectedGeolocation}
+                        onChange={(event, newValue) => {
+                          setSelectedGeolocation(newValue);
+                          Formik.setFieldValue(
+                            "geolocation",
+                            newValue ? newValue._id : "",
+                          );
+                        }}
+                        onBlur={() =>
+                          Formik.setFieldTouched("geolocation", true)
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Geolocation"
+                            placeholder="Search geolocation..."
+                            fullWidth
+                            error={
+                              Formik.touched.geolocation &&
+                              Boolean(Formik.errors.geolocation)
+                            }
+                            helperText={
+                              Formik.touched.geolocation &&
+                              Formik.errors.geolocation
+                            }
+                          />
+                        )}
+                      />
+                    </Box>
+
+                    {/* Customer */}
+                    {customers.length > 0 && (
                       <Box>
                         <Autocomplete
                           disabled={isEdit}
-                          options={attendeeClass}
-                          getOptionLabel={(option) => option.class_name}
-                          value={selectedClass}
-                          onChange={(event, newValue) => {
-                            setSelectedClass(newValue);
-
-                            Formik.setFieldValue(
-                              "class",
-                              newValue ? newValue._id : "",
-                            );
-                          }}
-                          onBlur={() => Formik.setFieldTouched("class", true)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select Class"
-                              placeholder="Search class..."
-                              fullWidth
-                              error={
-                                Formik.touched.class &&
-                                Boolean(Formik.errors.class)
-                              }
-                              helperText={
-                                Formik.touched.class && Formik.errors.class
-                              }
-                            />
-                          )}
-                        />
-                      </Box>
-                    )}
-
-                    {/* Section */}
-                    {section.length > 0 && (
-                      <Box>
-                        <Autocomplete
-                          disabled={isEdit}
-                          options={section}
-                          getOptionLabel={(option) => option.section_name}
-                          value={selectedSection}
-                          onChange={(event, newValue) => {
-                            setSelectedSection(newValue);
-                            Formik.setFieldValue(
-                              "section",
-                              newValue ? newValue._id : "",
-                            );
-                          }}
-                          onBlur={() => Formik.setFieldTouched("section", true)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Select Section"
-                              placeholder="Search section..."
-                              fullWidth
-                              error={
-                                Formik.touched.section &&
-                                Boolean(Formik.errors.section)
-                              }
-                              helperText={
-                                Formik.touched.section && Formik.errors.section
-                              }
-                            />
-                          )}
-                        />
-                      </Box>
-                    )}
-
-                    {/* Student */}
-                    {students.length > 0 && (
-                      <Box>
-                        <Autocomplete
-                          disabled={isEdit}
-                          options={students}
+                          options={customers}
                           getOptionLabel={(option) => option.name}
-                          value={selectedStudent}
+                          value={selectedCustomer}
                           onChange={(event, newValue) => {
-                            setSelectedStudent(newValue);
+                            setSelectedCustomer(newValue);
 
                             Formik.setFieldValue(
-                              "student",
+                              "customer",
                               newValue ? newValue._id : "",
                             );
                             Formik.setFieldValue(
-                              "student_name",
+                              "customer_name",
                               newValue ? newValue.name : "",
                             );
                           }}
-                          onBlur={() => Formik.setFieldTouched("student", true)}
+                          onBlur={() =>
+                            Formik.setFieldTouched("customer", true)
+                          }
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label="Select Student"
-                              placeholder="Search student..."
+                              label="Select Customer"
+                              placeholder="Search customer..."
                               fullWidth
                               error={
-                                Formik.touched.student &&
-                                Boolean(Formik.errors.student)
+                                Formik.touched.customer &&
+                                Boolean(Formik.errors.customer)
                               }
                               helperText={
-                                Formik.touched.student && Formik.errors.student
+                                Formik.touched.customer &&
+                                Formik.errors.customer
                               }
                             />
                           )}
@@ -1433,7 +1278,7 @@ export default function Salesinvoice() {
                       {/* <TableCell component="th" scope="row"> salesinvoice</TableCell> */}
                       <TableCell align="right">Invoice Code</TableCell>
                       <TableCell align="right">Invoice Date</TableCell>
-                      <TableCell align="right">Student</TableCell>
+                      <TableCell align="right">Customer</TableCell>
                       <TableCell align="right">Remarks</TableCell>
                       <TableCell align="right">Status</TableCell>
                       {/* <TableCell align="right">Payment Status</TableCell> */}
@@ -1441,7 +1286,7 @@ export default function Salesinvoice() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {studentSalesinvoice.map((value, i) => (
+                    {customerSalesinvoice.map((value, i) => (
                       <TableRow
                         key={i}
                         sx={{
@@ -1455,7 +1300,7 @@ export default function Salesinvoice() {
                           {dayjs(value.invoiceDate).format("DD-MM-YYYY")}
                         </TableCell>
                         <TableCell align="right">
-                          {value?.student?.name}
+                          {value?.customer?.name}
                         </TableCell>
                         <TableCell align="right">{value.remarks}</TableCell>
                         <TableCell align="right">{value.status}</TableCell>
@@ -1515,324 +1360,6 @@ export default function Salesinvoice() {
                   </TableBody>
                 </Table>
               </TableContainer>
-            </Box>
-          </Box>
-        )}
-
-        {tab === 2 && (
-          <Box>
-            <Box component={"div"} sx={{}}>
-              <Paper sx={{ padding: "20px", margin: "10px" }}>
-                <Typography
-                  variant="h4"
-                  sx={{ fontWeight: "800", textAlign: "center" }}
-                >
-                  Create Multiple Fee Invoice
-                </Typography>
-
-                <Box component="form" noValidate autoComplete="off">
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: {
-                        xs: "1fr", // mobile
-                        md: "1fr 1fr", // desktop → 2 columns
-                      },
-                      gap: 2,
-                      mt: 2,
-                    }}
-                  >
-                    {/* Invoice Date */}
-                    <Box>
-                      <TextField
-                        name="invoiceDate"
-                        label="Date"
-                        type="date"
-                        variant="outlined"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                        value={Formik.values.invoiceDate}
-                        onChange={Formik.handleChange}
-                        //  onChange={(e) =>
-                        //         handleChange(index, "discountPer", e.target.value)
-                        //       }
-                        onBlur={Formik.handleBlur}
-                      />
-                      {Formik.touched.invoiceDate &&
-                        Formik.errors.invoiceDate && (
-                          <Typography color="error" variant="caption">
-                            {Formik.errors.invoiceDate}
-                          </Typography>
-                        )}
-                    </Box>
-
-                    {/* Academic Year */}
-                    <Box>
-                      <Autocomplete
-                        options={years}
-                        getOptionLabel={(option) => option.label}
-                        value={selectedYear}
-                        onChange={(event, newValue) => {
-                          setSelectedYear(newValue);
-
-                          Formik.setFieldValue(
-                            "year",
-                            newValue ? newValue.value : "",
-                          );
-                        }}
-                        onBlur={() => Formik.setFieldTouched("year", true)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Academic Year"
-                            placeholder="Search year..."
-                            fullWidth
-                            error={
-                              Formik.touched.year && Boolean(Formik.errors.year)
-                            }
-                            helperText={
-                              Formik.touched.year && Formik.errors.year
-                            }
-                          />
-                        )}
-                      />
-                    </Box>
-
-                    {/* For Month Of */}
-                    <Box>
-                      <Autocomplete
-                        // disabled={isEdit}
-                        options={months}
-                        getOptionLabel={(option) => option.label}
-                        value={selectedMonth}
-                        onChange={(event, newValue) => {
-                          setSelectedMonth(newValue);
-
-                          Formik.setFieldValue(
-                            "month",
-                            newValue ? newValue.value : "",
-                          );
-                          Formik.setFieldValue(
-                            "monthname",
-                            newValue ? newValue.label : "",
-                          );
-                        }}
-                        onBlur={() => Formik.setFieldTouched("month", true)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select For Month Of"
-                            placeholder="Search For Month Of..."
-                            fullWidth
-                            error={
-                              Formik.touched.month &&
-                              Boolean(Formik.errors.month)
-                            }
-                            helperText={
-                              Formik.touched.month && Formik.errors.month
-                            }
-                          />
-                        )}
-                      />
-                    </Box>
-
-                    {/* Class */}
-
-                    <Box>
-                      <Autocomplete
-                        options={attendeeClass}
-                        getOptionLabel={(option) => option.class_name}
-                        value={selectedClass}
-                        onChange={(event, newValue) => {
-                          setSelectedClass(newValue);
-
-                          Formik.setFieldValue(
-                            "class",
-                            newValue ? newValue._id : "",
-                          );
-                        }}
-                        onBlur={() => Formik.setFieldTouched("class", true)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Class"
-                            placeholder="Search class..."
-                            fullWidth
-                            error={
-                              Formik.touched.class &&
-                              Boolean(Formik.errors.class)
-                            }
-                            helperText={
-                              Formik.touched.class && Formik.errors.class
-                            }
-                          />
-                        )}
-                      />
-                    </Box>
-
-                    {/* Section */}
-
-                    <Box>
-                      <Autocomplete
-                        options={section}
-                        getOptionLabel={(option) => option.section_name}
-                        value={selectedSection}
-                        onChange={(event, newValue) => {
-                          setSelectedSection(newValue);
-                          Formik.setFieldValue(
-                            "section",
-                            newValue ? newValue._id : "",
-                          );
-                        }}
-                        onBlur={() => Formik.setFieldTouched("section", true)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Section"
-                            placeholder="Search section..."
-                            fullWidth
-                            error={
-                              Formik.touched.section &&
-                              Boolean(Formik.errors.section)
-                            }
-                            helperText={
-                              Formik.touched.section && Formik.errors.section
-                            }
-                          />
-                        )}
-                      />
-                    </Box>
-
-                    {/* feestructure */}
-                    <Box>
-                      <Autocomplete
-                        options={feestructure}
-                        getOptionLabel={(option) => option?.name || ""}
-                        isOptionEqualToValue={(option, value) =>
-                          option._id === value?._id
-                        }
-                        value={Formik.feestructure}
-                        // onChange={Formik.handleChange}
-                        onChange={(event, newValue) => {
-                          Formik.setFieldValue(
-                            "feestructure",
-                            newValue ? newValue._id : "",
-                          );
-                          Formik.setFieldValue(
-                            "feeAmount",
-                            newValue ? newValue?.amount : 0,
-                          );
-                          Formik.setFieldValue(
-                            "feestructure_name",
-                            newValue ? newValue?.feestype?.feestype_name : "",
-                          );
-                          setSelectedFeestructure(newValue);
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Feestructure"
-                            placeholder="Search feestructure..."
-                            fullWidth
-                          />
-                        )}
-                      />
-                    </Box>
-
-                    {/* feeFrequency */}
-                    <Box>
-                      <TextField
-                        select
-                        fullWidth
-                        required
-                        label="feeFrequency"
-                        name="feeFrequency"
-                        // value={Formik.values.feeFrequency}
-                        // onChange={Formik.handleChange}
-                        value={Formik.feeFrequency}
-                        // onChange={Formik.handleChange}
-                        onChange={(event, newValue) => {
-                          Formik.setFieldValue(
-                            "feeFrequency",
-                            newValue ? newValue.props.value : "",
-                          );
-                        }}
-                        // onBlur={Formik.handleBlur}
-                      >
-                        <MenuItem value="">Select feeFrequency</MenuItem>
-                        <MenuItem value="monthly">Monthly</MenuItem>
-                        <MenuItem value="quaterly">Quaterly</MenuItem>
-                        <MenuItem value="annually">Annually</MenuItem>
-                        <MenuItem value="ontime">One-Time</MenuItem>
-                        <MenuItem value="termwise">Term-wise</MenuItem>
-                      </TextField>
-                      {/* {Formik.touched.feeFrequency && Formik.errors.feeFrequency && (
-                        <p style={{ color: "red", textTransform: "capitalize" }}>
-                          {Formik.errors.feeFrequency}
-                        </p>
-                      )} */}
-                    </Box>
-
-                    {/* feeAmount */}
-                    <Box>
-                      <TextField
-                        fullWidth
-                        label="feeAmount"
-                        variant="outlined"
-                        name="feeAmount"
-                        type="number"
-                        // value={Formik.values.feeAmount}
-                        // onChange={Formik.handleChange}
-                        // onBlur={Formik.handleBlur}
-                        value={Formik.values.feeAmount}
-                        onChange={Formik.handleChange}
-                        // onChange={(e) =>
-                        //   handleChange(index, "feeAmount", e.target.value)
-                        // }
-                        disabled
-                      />
-                      {/* {Formik.touched.feeAmount && Formik.errors.feeAmount && (
-                        <Typography color="error" variant="caption">
-                          {Formik.errors.feeAmount}
-                        </Typography>
-                      )} */}
-                    </Box>
-
-                    {/* Remarks → full width */}
-                    <Box sx={{ gridColumn: "1 / -1" }}>
-                      <TextField
-                        fullWidth
-                        label="Remarks"
-                        variant="outlined"
-                        name="remarks"
-                        value={Formik.values.remarks}
-                        onChange={Formik.handleChange}
-                        onBlur={Formik.handleBlur}
-                        multiline
-                        rows={3}
-                      />
-                      {Formik.touched.remarks && Formik.errors.remarks && (
-                        <Typography color="error" variant="caption">
-                          {Formik.errors.remarks}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 2,
-                      mt: 4,
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <Button variant="outlined" onClick={createMultipleInvoice}>
-                      Submit
-                    </Button>
-                  </Box>
-                </Box>
-              </Paper>
             </Box>
           </Box>
         )}
