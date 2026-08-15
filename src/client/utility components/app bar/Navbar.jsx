@@ -33,7 +33,7 @@ function Navbar() {
 
   if (pathname.length > 1) {
     roleName = pathname[2] || "";
-    if (roleName && roleName.toLowerCase() === "school") {
+    if (roleName && roleName.toLowerCase() === "company") {
       isLoginWithAdmin = true;
     }
   }
@@ -89,7 +89,6 @@ function Navbar() {
               }}
               className="text-beautify"
             >
-              {/* <img src='./images/static/school_management_system.png' height={"90px"} width={'90px'} /> */}
               <img
                 src="https://res.cloudinary.com/da3dxqer8/image/upload/v1785818969/Inspiration-Innovations-Logo-Trans_idjcmw.png"
                 height="90"
@@ -102,7 +101,7 @@ function Navbar() {
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="open navigation menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -110,6 +109,7 @@ function Navbar() {
             >
               <MenuIcon />
             </IconButton>
+
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -117,7 +117,7 @@ function Navbar() {
                 vertical: "bottom",
                 horizontal: "left",
               }}
-              keepMountedH
+              keepMounted
               transformOrigin={{
                 vertical: "top",
                 horizontal: "left",
@@ -126,43 +126,30 @@ function Navbar() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: "block", md: "none" } }}
             >
-              {!authenticated && (
-                <>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Button
-                      className="button-beautify button-beautify-one"
+              {!authenticated
+                ? [
+                    <MenuItem
+                      key="register"
+                      component={Link}
+                      to="/register"
                       onClick={handleCloseNavMenu}
-                      sx={{ my: 2, color: "white" }}
                     >
-                      <Box
-                        sx={{ display: "flex", flexDirection: "row" }}
-                        className="button-box"
-                      >
-                        Register
-                      </Box>
-                    </Button>
-                  </MenuItem>
+                      Register
+                    </MenuItem>,
 
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Button
-                      className="button-beautify button-beautify-one"
+                    <MenuItem
+                      key="login"
+                      component={Link}
+                      to="/login/company"
                       onClick={handleCloseNavMenu}
-                      sx={{ my: 2, color: "white" }}
                     >
-                      <Box
-                        sx={{ display: "flex", flexDirection: "row" }}
-                        className="button-box"
-                      >
-                        <LoginIcon sx={{ marginRight: "5px" }} />
-                        Login
-                      </Box>
-                    </Button>
-                  </MenuItem>
-                </>
-              )}
+                      <LoginIcon sx={{ mr: 1 }} />
+                      Login
+                    </MenuItem>,
+                  ]
+                : null}
             </Menu>
           </Box>
-
           <Link className="nav-list" to={"/"}>
             <Typography
               variant="h5"
@@ -180,7 +167,7 @@ function Navbar() {
               }}
               className="text-beautify"
             >
-              SMS
+              BMS
             </Typography>
           </Link>
 
@@ -193,7 +180,6 @@ function Navbar() {
           >
             {!authenticated && (
               <>
-                {/* <Link className="nav-list" to={"/login/school"}> */}
                 <Link className="nav-list" to={"/login/company"}>
                   <Button
                     className="button-beautify button-beautify-one"

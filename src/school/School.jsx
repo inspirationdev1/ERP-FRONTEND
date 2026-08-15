@@ -291,7 +291,7 @@ export default function School() {
               textOverflow: "ellipsis",
             }}
           >
-            {isMobile ? "SMS" : "School Management System"}
+            {isMobile ? "BMS" : "School Management System"}
           </Typography> */}
 
           {/* CENTER LOGO + TITLE */}
@@ -316,7 +316,7 @@ export default function School() {
                 fontSize: { xs: 16, md: 20 },
               }}
             >
-              {isMobile ? "SMS" : "School Management System"}
+              {isMobile ? "BMS" : "School Management System"}
             </Typography>
             {/* Logo */}
             <Box
@@ -340,7 +340,7 @@ export default function School() {
                 fontSize: { xs: 16, md: 20 },
               }}
             >
-              {isMobile ? "SMS" : "School Management System"}
+              {isMobile ? "BMS" : "School Management System"}
             </Typography> */}
           </Box>
 
