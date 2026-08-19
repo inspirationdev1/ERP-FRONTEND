@@ -22,7 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./Login.css";
 import { AuthContext } from "../../../context/AuthContext";
 
-export default function Login() {
+export default function Login_Orig() {
   let { role } = useParams();
   const [loginType, setLoginType] = useState("company_owner");
   const [isloginType, setIsloginType] = useState(false);
@@ -71,57 +71,42 @@ export default function Login() {
   const Formik = useFormik({
     initialValues: initialValues,
     validationSchema: loginSchema,
-
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       if (loginType === null || loginType === "") {
-        setMessage("Select user type");
-        setType("error");
+        Alert("Select user type");
         return;
       }
-
       console.log("Login Formik values", values);
-
       let url;
       let navUrl;
-
-      if (loginType === "company_owner") {
+      if (loginType == "company_owner") {
+        // url = `${baseUrl}/school/login`;
+        // navUrl = "/school";
         url = `${baseUrl}/company/login`;
         navUrl = "/company";
-      } else if (loginType === "user") {
+      } else if (loginType == "user") {
         url = `${baseUrl}/user/login`;
         navUrl = "/user";
       }
-
-      try {
-        const resp = await axios.post(url, { ...values });
-
-        setMessage(resp.data.message);
-        setType("success");
-
-        let token = resp.headers.get("Authorization");
-
-        if (resp.data.success) {
-          localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify(resp.data.user));
-
-          login(resp.data.user);
-
-          navigate(navUrl);
-        }
-
-        Formik.resetForm();
-      } catch (e) {
-        console.log("Error in login:", e.response?.data?.message);
-
-        setMessage(
-          e.response?.data?.message || "Login failed. Please try again.",
-        );
-
-        setType("error");
-      } finally {
-        // Formik automatically changes isSubmitting to false
-        // after onSubmit completes.
-      }
+      axios
+        .post(url, { ...values })
+        .then((resp) => {
+          setMessage(resp.data.message);
+          setType("success");
+          let token = resp.headers.get("Authorization");
+          if (resp.data.success) {
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", JSON.stringify(resp.data.user));
+            navigate(navUrl);
+            login(resp.data.user);
+          }
+          Formik.resetForm();
+        })
+        .catch((e) => {
+          setMessage(e.response.data.message);
+          setType("error");
+          console.log("Error in  register submit", e.response.data.message);
+        });
     },
   });
 
@@ -149,6 +134,10 @@ export default function Login() {
         component={"div"}
         sx={{ padding: "40px", maxWidth: "700px", margin: "auto" }}
       >
+        {/* <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center", }} component={'div'}>
+                <Typography variant="h2">Log In</Typography>
+            </Box> */}
+
         <Paper sx={{ p: 4, mt: 2, maxWidth: 300, mx: "auto" }}>
           <Box
             sx={{
@@ -223,23 +212,8 @@ export default function Login() {
             )}
 
             {/* Button */}
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              disabled={Formik.isSubmitting}
-              sx={{
-                height: "40px",
-              }}
-            >
-              {Formik.isSubmitting ? (
-                <>
-                  <CircularProgress size={22} color="inherit" sx={{ mr: 1 }} />
-                  Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
+            <Button type="submit" variant="contained" fullWidth>
+              Login
             </Button>
           </Box>
         </Paper>
