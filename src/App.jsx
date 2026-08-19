@@ -135,7 +135,7 @@ import PaidFeesReportPrint from "./school/components/reports/PaidFeesReportPrint
 import Purchaseinvoice from "./company/components/purchaseinvoices/Purchaseinvoices";
 import PurchaseinvoicePrint from "./company/components/purchaseinvoices/PurchaseinvoicePrint";
 
-import SupplierPayments from "./company/components/payments/SupplierPayments";
+import Supplierpayments from "./company/components/payments/Supplierpayments";
 import Payments from "./company/components/payments/Payments";
 import PaymentPrint from "./company/components/payments/PaymentPrint";
 import PendingExpensesReportPrint from "./company/components/reports/PendingExpensesReportPrint";
@@ -429,7 +429,7 @@ function App() {
                 path="purchaseinvoiceprint"
                 element={<PurchaseinvoicePrint />}
               />
-              <Route path="supplierpayment" element={<SupplierPayments />} />
+              <Route path="supplierpayment" element={<Supplierpayments />} />
               <Route path="payment" element={<Payments />} />
               <Route path="paymentprint" element={<PaymentPrint />} />
               <Route path="expensetype" element={<Expensetypes />} />
