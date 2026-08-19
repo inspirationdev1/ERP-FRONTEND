@@ -21,11 +21,9 @@ import axios from "axios";
 import { baseUrl } from "../../../environment";
 import CustomizedSnackbars from "../../../basic utility components/CustomizedSnackbars";
 import { schoolreportsSchema } from "../../../yupSchema/schoolreportsSchema";
-import { AuthContext } from '../../../context/AuthContext';
+import { AuthContext } from "../../../context/AuthContext";
 
 export default function Uploaddata() {
-
-
   const { authenticated, user } = useContext(AuthContext);
   const [file, setFile] = useState(null);
   //   CLEARING IMAGE FILE REFENCE FROM INPUT
@@ -33,26 +31,25 @@ export default function Uploaddata() {
 
   const [loading, setLoading] = useState(true);
 
-
   const [screenNames, setReportNames] = useState([]);
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
-  const [sections, setSection] = useState([])
+  const [sections, setSection] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
-  const [teachers, setTeacher] = useState([])
+  const [teachers, setTeacher] = useState([]);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
-  const [subjects, setSubject] = useState([])
+  const [subjects, setSubject] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState(null);
-  const [examinations, setExamination] = useState([])
+  const [examinations, setExamination] = useState([]);
   const [selectedExamination, setSelectedExamination] = useState(null);
-  const [questionpapers, setQuestionpaper] = useState([])
+  const [questionpapers, setQuestionpaper] = useState([]);
   const [selectedQuestionpaper, setSelectedQuestionpaper] = useState(null);
   const [isPrint, setPrint] = useState(false);
   const [isDataValid, setIsDataValid] = useState(true);
-  const [dataError, setDataError] = useState('');
+  const [dataError, setDataError] = useState("");
   const [isEdit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -65,7 +62,6 @@ export default function Uploaddata() {
     return { label: `${year}-${year + 1}`, value: year };
   });
 
-
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -75,7 +71,6 @@ export default function Uploaddata() {
       fileInputRef.current.value = ""; // Clear the file input
     }
     setFile(null); // Reset the file state
-
   };
 
   const handleUpload = async () => {
@@ -85,51 +80,39 @@ export default function Uploaddata() {
     formData.append("file", file);
     // .post(`${baseUrl}/section/create`, { ...values })
     try {
-
       if (selectedScreen?.screenId == "accountlevel") {
-        
         await axios
           .post(`${baseUrl}/upload/upload_accountlevel`, formData)
           .then((resp) => {
             setMessage(resp.data.message);
             setType("success");
             handleClearFile();
-
           })
           .catch((e) => {
             setMessage(e.response.data.message);
             setType("error");
             console.log("Error, response admin accountlevel calls", e);
           });
-
-
       } else if (selectedScreen?.screenId == "accountledger") {
-        
         await axios
           .post(`${baseUrl}/upload/upload_accountledger`, formData)
           .then((resp) => {
             setMessage(resp.data.message);
             setType("success");
             handleClearFile();
-
           })
           .catch((e) => {
             setMessage(e.response.data.message);
             setType("error");
             console.log("Error, response admin accountledger calls", e);
           });
-
-
-      }else if (selectedScreen?.screenId == "teacher") {
-
-
+      } else if (selectedScreen?.screenId == "teacher") {
         await axios
           .post(`${baseUrl}/upload/upload_teacher`, formData)
           .then((resp) => {
             setMessage(resp.data.message);
             setType("success");
             handleClearFile();
-
           })
           .catch((e) => {
             setMessage(e.response.data.message);
@@ -143,7 +126,6 @@ export default function Uploaddata() {
             setMessage(resp.data.message);
             setType("success");
             handleClearFile();
-
           })
           .catch((e) => {
             setMessage(e.response.data.message);
@@ -157,7 +139,6 @@ export default function Uploaddata() {
             setMessage(resp.data.message);
             setType("success");
             handleClearFile();
-
           })
           .catch((e) => {
             setMessage(e.response.data.message);
@@ -171,7 +152,6 @@ export default function Uploaddata() {
             setMessage(resp.data.message);
             setType("success");
             handleClearFile();
-
           })
           .catch((e) => {
             setMessage(e.response.data.message);
@@ -185,7 +165,6 @@ export default function Uploaddata() {
             setMessage(resp.data.message);
             setType("success");
             handleClearFile();
-
           })
           .catch((e) => {
             setMessage(e.response.data.message);
@@ -194,26 +173,18 @@ export default function Uploaddata() {
           });
       }
 
-
-
-
-
       // alert("Upload success");
     } catch (err) {
       console.error(err);
       setMessage(err.response.data.message);
       setType("error");
-
     }
   };
 
   const cancelEdit = () => {
     setEdit(false);
-    Formik.resetForm()
+    Formik.resetForm();
   };
-
-
-
 
   //   MESSAGE
   const [message, setMessage] = useState("");
@@ -240,22 +211,19 @@ export default function Uploaddata() {
     initialValues: initialValues,
     // validationSchema: schoolreportsSchema,
     onSubmit: (values) => {
-
-
       if (!values.screenId) {
-        setDataError('Select the Screen Name');
+        setDataError("Select the Screen Name");
         setIsDataValid(false);
         return;
       }
 
       if (!file) {
-        setDataError('Select the file');
+        setDataError("Select the file");
         setIsDataValid(false);
         return;
       }
 
-
-      //   if (values.screenId == "accountlevel") {        
+      //   if (values.screenId == "accountlevel") {
       //   }
 
       setIsDataValid(true);
@@ -266,43 +234,26 @@ export default function Uploaddata() {
   const [month, setMonth] = useState([]);
   const [year, setYear] = useState([]);
 
-
   const fetchScreenNames = async () => {
     try {
       const reportsData = [
         { screenId: "accountlevel", screenName: "Account Level" },
         { screenId: "accountledger", screenName: "Account Ledger" },
-        { screenId: "teacher", screenName: "Teacher" },
-        { screenId: "parent", screenName: "Parent" },
-        { screenId: "class", screenName: "Class" },
-        { screenId: "section", screenName: "Section" },
-        { screenId: "student", screenName: "Student" },
+        { screenId: "customer", screenName: "Customer" },
+        { screenId: "supplier", screenName: "Supplier" },
+        { screenId: "employee", screenName: "Employee" },
+        { screenId: "item", screenName: "Item" },
       ];
-      console.log("Report Names", reportsData)
+      console.log("Report Names", reportsData);
       setReportNames(reportsData);
-
     } catch (error) {
-      console.error('Error fetching Screen Names:', error);
+      console.error("Error fetching Screen Names:", error);
     }
   };
 
-
-
-
-
   useEffect(() => {
     fetchScreenNames();
-
-
-
   }, [message]);
-
-
-
-
-
-
-
 
   return (
     <>
@@ -314,15 +265,9 @@ export default function Uploaddata() {
         />
       )}
 
-
-      <Box
-      >
-
-
+      <Box>
         <Box component={"div"} sx={{}}>
-          <Paper
-            sx={{ padding: '20px', margin: "10px" }}
-          >
+          <Paper sx={{ padding: "20px", margin: "10px" }}>
             <Typography
               variant="h4"
               sx={{ fontWeight: "800", textAlign: "center" }}
@@ -335,7 +280,6 @@ export default function Uploaddata() {
               autoComplete="off"
               onSubmit={Formik.handleSubmit}
             >
-
               {!isDataValid && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {dataError}
@@ -346,18 +290,15 @@ export default function Uploaddata() {
                 sx={{
                   display: "grid",
                   gridTemplateColumns: {
-                    xs: "1fr",      // mobile
-                    md: "1fr 1fr",  // desktop → 2 columns
+                    xs: "1fr", // mobile
+                    md: "1fr 1fr", // desktop → 2 columns
                   },
                   gap: 2,
                   mt: 2,
                 }}
               >
-
-
                 {/* ScreenNames */}
                 <Box>
-
                   <Autocomplete
                     options={screenNames}
                     getOptionLabel={(option) => option.screenName}
@@ -367,10 +308,8 @@ export default function Uploaddata() {
 
                       Formik.setFieldValue(
                         "screenId",
-                        newValue ? newValue.screenId : ""
+                        newValue ? newValue.screenId : "",
                       );
-
-
                     }}
                     onBlur={() => Formik.setFieldTouched("screenId", true)}
                     renderInput={(params) => (
@@ -379,23 +318,25 @@ export default function Uploaddata() {
                         label="Select Screen Name"
                         placeholder="Search screen name..."
                         fullWidth
-                        error={Formik.touched.screenId && Boolean(Formik.errors.screenId)}
-                        helperText={Formik.touched.screenId && Formik.errors.screenId}
+                        error={
+                          Formik.touched.screenId &&
+                          Boolean(Formik.errors.screenId)
+                        }
+                        helperText={
+                          Formik.touched.screenId && Formik.errors.screenId
+                        }
                       />
                     )}
                   />
-
-
                 </Box>
 
-
-                <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} inputRef={fileInputRef} />
-
-
-
+                <input
+                  type="file"
+                  accept=".xlsx, .xls"
+                  onChange={handleFileChange}
+                  inputRef={fileInputRef}
+                />
               </Box>
-
-
 
               <Box sx={{ marginTop: "10px" }} component={"div"}>
                 <Button
@@ -418,10 +359,6 @@ export default function Uploaddata() {
             </Box>
           </Paper>
         </Box>
-
-
-
-
       </Box>
     </>
   );

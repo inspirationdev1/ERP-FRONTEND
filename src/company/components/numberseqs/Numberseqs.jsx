@@ -181,6 +181,7 @@ export default function Numberseqs() {
         { screen_id: "salesinvoice", screen_name: "Sales Invoice" },
         { screen_id: "receipt", screen_name: "Receipt" },
         { screen_id: "purchaseinvoice", screen_name: "Purchase Invoice" },
+        { screen_id: "supplierpayment", screen_name: "Supplier Payment" },
         { screen_id: "expense", screen_name: "Expense" },
         { screen_id: "payment", screen_name: "Payment" },
         { screen_id: "marksheet", screen_name: "Marksheet" },

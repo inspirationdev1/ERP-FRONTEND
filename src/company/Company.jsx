@@ -102,7 +102,7 @@ export default function Company() {
       children: [
         { label: "Suppliers", link: "/company/suppliers" },
         { label: "Purchase Invoice", link: "/company/purchaseinvoice" },
-        { label: "Payments", link: "/company/payement" },
+        { label: "Payments", link: "/company/supplierpayment" },
         { label: "Reports", link: "/company/studentreports" },
       ],
     },

@@ -27,13 +27,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../environment";
 import CustomizedSnackbars from "../../../basic utility components/CustomizedSnackbars";
-import { paymentSchema } from "../../../yupSchema/paymentSchema";
+import { supplierpaymentSchema } from "../../../yupSchema/supplierpaymentSchema";
 import PaymentPrint from "./PaymentPrint";
 
-export default function Payments() {
+export default function Supplierpayments() {
   const [isDataValid, setIsDataValid] = useState(true);
   const [dataError, setDataError] = useState("");
-  const [employeePayment, setEmployeePayment] = useState([]);
+  const [supplierPayment, setSupplierPayment] = useState([]);
   const [isEdit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
   const [date, setDate] = useState(new Date());
@@ -41,13 +41,13 @@ export default function Payments() {
   const [isPrint, setPrint] = useState(false);
   const [printId, setPrintId] = useState(null);
 
-  const [employees, setEmployees] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [suppliers, setSuppliers] = useState([]);
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
 
   const [loading, setLoading] = useState(true);
 
-  const [expenses, setExpenses] = useState([]);
-  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [purchaseinvoices, setPurchaseinvoices] = useState([]);
+  const [selectedPurchaseinvoice, setSelectedPurchaseinvoice] = useState(null);
   const [tab, setTab] = useState(0);
   const [selectedYear, setSelectedYear] = useState(null);
 
@@ -58,9 +58,9 @@ export default function Payments() {
 
   const [paymentDetails, setPaymentDetails] = useState([
     {
-      employee: null,
-      expenseId: null,
-      expenseAmount: 0,
+      supplier: null,
+      piId: null,
+      invAmount: 0,
       paidAmount: 0,
       remarks: "",
       year: "",
@@ -71,9 +71,9 @@ export default function Payments() {
   const clearPaymentDetails = () => {
     setPaymentDetails([
       {
-        employee: null,
-        expenseId: null,
-        expenseAmount: 0,
+        supplier: null,
+        piId: null,
+        invAmount: 0,
         paidAmount: 0,
         remarks: "",
         year: "",
@@ -86,7 +86,7 @@ export default function Payments() {
   const handleDelete = (id) => {
     if (confirm("Are you sure you want to delete?")) {
       axios
-        .delete(`${baseUrl}/payment/delete/${id}`)
+        .delete(`${baseUrl}/supplierpayment/delete/${id}`)
         .then((resp) => {
           setMessage(resp.data.message);
           setType("success");
@@ -102,7 +102,7 @@ export default function Payments() {
     console.log("Handle  Edit is called", id);
     setEdit(true);
     axios
-      .get(`${baseUrl}/payment/fetch-single/${id}`)
+      .get(`${baseUrl}/supplierpayment/fetch-single/${id}`)
       .then((resp) => {
         Formik.setFieldValue("paymentCode", resp.data.data.paymentCode);
         Formik.setFieldValue(
@@ -140,16 +140,6 @@ export default function Payments() {
       });
   };
 
-  // const handlePrint = async (id) => {
-  //     console.log("Handle  Print is called", id);
-  //     setPrint(true);
-
-  //     window.open(`/school/PaymentPrint?id=${id}`,
-  //         '_blank');
-  //     setPrint(false);
-
-  // };
-
   const handlePrint = (id) => {
     setPrint(true);
     const url = `${window.location.origin}/school/PaymentPrint?id=${id}`;
@@ -162,8 +152,8 @@ export default function Payments() {
     setEditId(null);
     Formik.resetForm();
     // 🔥 reset Autocomplete values
-    setSelectedEmployee(null);
-    setSelectedExpense(null);
+    setSelectedSupplier(null);
+    setSelectedPurchaseinvoice(null);
     setSelectedYear(null);
     setIsDataValid(true);
     // 🔥 reset Autocomplete values
@@ -200,13 +190,13 @@ export default function Payments() {
     const seen = new Set();
 
     for (const row of paymentDetails) {
-      if (!row.expenseId?._id) continue; // skip empty rows
+      if (!row.piId?._id) continue; // skip empty rows
 
-      if (seen.has(row.expenseId._id)) {
+      if (seen.has(row.piId._id)) {
         return true; // duplicate found
       }
 
-      seen.add(row.expenseId._id);
+      seen.add(row.piId._id);
     }
 
     return false;
@@ -214,7 +204,7 @@ export default function Payments() {
 
   const Formik = useFormik({
     initialValues: initialValues,
-    validationSchema: paymentSchema,
+    validationSchema: supplierpaymentSchema,
     onSubmit: (values) => {
       if (paymentDetails.length == 0) {
         setDataError("Payment Details is missing");
@@ -223,7 +213,9 @@ export default function Payments() {
       }
 
       if (hasDuplicateInvoice(paymentDetails)) {
-        setDataError("Duplicate Expense selected. Please remove duplicates.");
+        setDataError(
+          "Duplicate Purchaseinvoice selected. Please remove duplicates.",
+        );
         setIsDataValid(false);
         return;
       }
@@ -231,8 +223,8 @@ export default function Payments() {
       let hasInvalidRow = false;
 
       for (const item of paymentDetails) {
-        if (item.expenseAmount === 0 || item.paidAmount === 0) {
-          setDataError("expenseAmount & paidAmount must be greater than 0");
+        if (item.invAmount === 0 || item.paidAmount === 0) {
+          setDataError("invAmount & paidAmount must be greater than 0");
           hasInvalidRow = true;
           break; // exit loop when condition met
         }
@@ -249,10 +241,10 @@ export default function Payments() {
       const payload = {
         ...values,
         paymentDetails: paymentDetails.map((row) => ({
-          employee: row.employee._id,
-          expenseId: row.expenseId._id,
-          expenseCode: row.expenseId.expenseCode,
-          expenseAmount: row.expenseAmount,
+          supplier: row.supplier._id,
+          piId: row.piId._id,
+          piCode: row.piId.piCode,
+          invAmount: row.invAmount,
           paidAmount: row.paidAmount,
           remarks: "",
           year: values.year,
@@ -262,7 +254,7 @@ export default function Payments() {
         console.log("edit id", editId);
 
         axios
-          .patch(`${baseUrl}/payment/update/${editId}`, payload)
+          .patch(`${baseUrl}/supplierpayment/update/${editId}`, payload)
           .then((resp) => {
             console.log("Edit submit", resp);
             setMessage(resp.data.message);
@@ -278,7 +270,7 @@ export default function Payments() {
           });
       } else {
         axios
-          .post(`${baseUrl}/payment/create`, payload)
+          .post(`${baseUrl}/supplierpayment/create`, payload)
           .then((resp) => {
             console.log("Response after submitting admin casting", resp);
             setMessage(resp.data.message);
@@ -299,66 +291,53 @@ export default function Payments() {
 
   const [month, setMonth] = useState([]);
   const [year, setYear] = useState([]);
-  const fetchPayment = () => {
-    // axios
-    //   .get(`${baseUrl}/casting/get-month-year`)
-    //   .then((resp) => {
-    //     console.log("Fetching month and year.", resp);
-    //     setMonth(resp.data.month);
-    //     setYear(resp.data.year);
-    //   })
-    //   .catch((e) => {
-    //     console.log("Error in fetching month and year", e);
-    //   });
-  };
 
-  const fetchemployeespayment = () => {
+  const fetchsupplierspayment = () => {
     axios
-      .get(`${baseUrl}/payment/fetch-all`)
+      .get(`${baseUrl}/supplierpayment/fetch-all`)
       .then((resp) => {
         console.log("Fetching data in  Casting Calls  admin.", resp);
-        setEmployeePayment(resp.data.data);
+        setSupplierPayment(resp.data.data);
       })
       .catch((e) => {
         console.log("Error in fetching casting calls admin data", e);
       });
   };
 
-  const fetchEmployees = async () => {
+  const fetchSuppliers = async () => {
     try {
-      const employeesResponse = await axios.get(
-        `${baseUrl}/employee/fetch-with-query`,
-      ); // Fetch All Employees
-      setEmployees(employeesResponse.data.data);
+      const suppliersResponse = await axios.get(
+        `${baseUrl}/supplier/fetch-with-query`,
+      ); // Fetch All Suppliers
+      setSuppliers(suppliersResponse.data.data);
     } catch (error) {
-      console.error("Error fetching employees or checking attendance:", error);
+      console.error("Error fetching suppliers or checking attendance:", error);
     }
   };
 
-  const fetchExpenses = async () => {
+  const fetchPurchaseinvoices = async () => {
     try {
-      if (!selectedEmployee?._id) return;
+      if (!selectedSupplier?._id) return;
 
-      const expensesResponse = await axios.get(
-        `${baseUrl}/expense/fetch-employee-expense`,
+      const purchaseinvoicesResponse = await axios.get(
+        `${baseUrl}/purchaseinvoice/fetch-supplier-invoice`,
         {
           params: {
-            employee: selectedEmployee?._id,
+            supplier: selectedSupplier?._id,
           },
         },
-      ); // Fetch based on Employee
-      setExpenses(expensesResponse.data.data);
+      ); // Fetch based on Supplier
+      setPurchaseinvoices(purchaseinvoicesResponse.data.data);
     } catch (error) {
-      setExpenses([]);
-      console.error("Error fetching employees or checking attendance:", error);
+      setPurchaseinvoices([]);
+      console.error("Error fetching suppliers or checking attendance:", error);
     }
   };
 
   useEffect(() => {
-    fetchemployeespayment();
-    fetchPayment();
+    fetchsupplierspayment();
 
-    fetchEmployees();
+    fetchSuppliers();
   }, [message]);
 
   useEffect(() => {
@@ -370,32 +349,32 @@ export default function Payments() {
   }, [isDataValid]);
 
   useEffect(() => {
-    fetchExpenses();
-  }, [selectedEmployee]);
+    fetchPurchaseinvoices();
+  }, [selectedSupplier]);
 
   const handleChange = (index, field, value) => {
     const updated = [...paymentDetails];
     updated[index][field] = value;
 
-    if (field === "employee") {
-      updated[index].expenseId = null; // 👈 clears invoice
-      updated[index].expenseAmount = 0;
+    if (field === "supplier") {
+      updated[index].piId = null; // 👈 clears invoice
+      updated[index].invAmount = 0;
       updated[index].paidAmount = 0;
-      setExpenses([]); // 👈 clear old expenses
-      setSelectedExpense(null); // 👈 clear Autocomplete text
-      setSelectedEmployee(value);
+      setPurchaseinvoices([]); // 👈 clear old purchaseinvoices
+      setSelectedPurchaseinvoice(null); // 👈 clear Autocomplete text
+      setSelectedSupplier(value);
     }
 
-    if (field === "expenseId") {
+    if (field === "piId") {
       const invBal =
-        (updated[index].expenseId.totalExpenseAmount || 0) -
-        (updated[index].expenseId.totalPaidAmount || 0);
-      updated[index].expenseAmount = invBal;
+        (updated[index].piId.totalNetAmount || 0) -
+        (updated[index].piId.totalPaidAmount || 0);
+      updated[index].invAmount = invBal;
       updated[index].paidAmount = 0;
     }
 
     if (field === "paidAmount") {
-      if (updated[index].paidAmount > updated[index].expenseAmount) {
+      if (updated[index].paidAmount > updated[index].invAmount) {
         updated[index].paidAmount = 0;
       }
     }
@@ -403,13 +382,13 @@ export default function Payments() {
   };
 
   const addRow = () => {
-    setSelectedEmployee(null);
+    setSelectedSupplier(null);
     setPaymentDetails([
       ...paymentDetails,
       {
-        employee: null,
-        expenseId: null,
-        expenseAmount: 0,
+        supplier: null,
+        piId: null,
+        invAmount: 0,
         paidAmount: 0,
         remarks: "",
         year: "",
@@ -662,67 +641,67 @@ export default function Payments() {
                           mb: 1,
                         }}
                       >
-                        {/* Employee */}
+                        {/* Supplier */}
                         <Box>
                           <Autocomplete
                             disabled={row.isEdit}
-                            options={employees}
-                            getOptionLabel={(option) => option.employee_name}
-                            value={row.employee}
+                            options={suppliers}
+                            getOptionLabel={(option) => option.name}
+                            value={row.supplier}
                             onChange={(event, newValue) => {
-                              // setSelectedEmployee(newValue);
-                              handleChange(index, "employee", newValue);
+                              // setSelectedSupplier(newValue);
+                              handleChange(index, "supplier", newValue);
                             }}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
-                                label="Select Employee"
-                                placeholder="Search employee..."
+                                label="Select Supplier"
+                                placeholder="Search supplier..."
                                 fullWidth
                               />
                             )}
                           />
                         </Box>
 
-                        {/* Expenses */}
+                        {/* Purchaseinvoices */}
 
                         <Autocomplete
                           disabled={row.isEdit}
-                          options={Array.isArray(expenses) ? expenses : []}
-                          getOptionLabel={(option) => option?.expenseCode || ""}
-                          value={row.expenseId}
+                          options={
+                            Array.isArray(purchaseinvoices)
+                              ? purchaseinvoices
+                              : []
+                          }
+                          getOptionLabel={(option) => option?.piCode || ""}
+                          value={row.piId}
                           isOptionEqualToValue={(option, value) =>
                             option?._id === value?._id
                           }
                           onChange={(event, newValue) => {
-                            setSelectedExpense(newValue);
-                            handleChange(index, "expenseId", newValue);
+                            setSelectedPurchaseinvoice(newValue);
+                            handleChange(index, "piId", newValue);
                           }}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label="Select Expense"
-                              placeholder="Search Expense..."
+                              label="Select Purchaseinvoice"
+                              placeholder="Search Purchaseinvoice..."
                               fullWidth
                             />
                           )}
                         />
 
-                        {/* expenseAmount */}
+                        {/* invAmount */}
                         <Box>
                           <TextField
                             fullWidth
-                            label="expenseAmount"
+                            label="invAmount"
                             variant="outlined"
-                            name="expenseAmount"
+                            name="invAmount"
                             type="number"
-                            value={row.expenseAmount}
+                            value={row.invAmount}
                             onChange={(e) =>
-                              handleChange(
-                                index,
-                                "expenseAmount",
-                                e.target.value,
-                              )
+                              handleChange(index, "invAmount", e.target.value)
                             }
                             disabled
                           />
@@ -761,7 +740,7 @@ export default function Payments() {
 
                     {/* Add Row */}
                     <Button variant="outlined" onClick={addRow}>
-                      + Add Expense
+                      + Add Purchaseinvoice
                     </Button>
                   </Box>
 
@@ -807,7 +786,7 @@ export default function Payments() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {employeePayment.map((value, i) => (
+                    {supplierPayment.map((value, i) => (
                       <TableRow
                         key={i}
                         sx={{

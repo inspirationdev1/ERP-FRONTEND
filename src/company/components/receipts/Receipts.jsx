@@ -34,7 +34,7 @@ import ReceiptPrint_MMS from "./ReceiptPrint_MMS";
 export default function Receipts() {
   const [isDataValid, setIsDataValid] = useState(true);
   const [dataError, setDataError] = useState("");
-  const [studentReceipt, setStudentReceipt] = useState([]);
+  const [customerReceipt, setCustomerReceipt] = useState([]);
   const [isEdit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
   const [date, setDate] = useState(new Date());
@@ -42,8 +42,8 @@ export default function Receipts() {
   const [isPrint, setPrint] = useState(false);
   const [printId, setPrintId] = useState(null);
 
-  const [students, setStudents] = useState([]);
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [customers, setCustomers] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [attendeeClass, setAttendeeClass] = useState([]);
@@ -65,7 +65,7 @@ export default function Receipts() {
     {
       class: null,
       section: null,
-      student: null,
+      customer: null,
       parent: null,
       siId: null,
       invAmount: 0,
@@ -83,7 +83,7 @@ export default function Receipts() {
       {
         class: null,
         section: null,
-        student: null,
+        customer: null,
         parent: null,
         siId: null,
         invAmount: 0,
@@ -136,10 +136,6 @@ export default function Receipts() {
         Formik.setFieldValue("receiptNumber", resp.data.data?.receiptNumber);
 
         Formik.setFieldValue("remarks", resp.data.data.remarks);
-        Formik.setFieldValue("year", resp.data.data.year);
-
-        const matchedYear = years.find((s) => s.value === resp.data.data.year);
-        setSelectedYear(matchedYear || null);
 
         setEditId(resp.data.data._id);
 
@@ -164,7 +160,7 @@ export default function Receipts() {
     };
 
     window.open(
-      `/school/ReceiptPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+      `/company/ReceiptPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
       "_blank",
     );
 
@@ -173,7 +169,7 @@ export default function Receipts() {
 
   // const handlePrint = (id) => {
   //   setPrint(true);
-  //   const url = `${window.location.origin}/school/ReceiptPrint_MMS?id=${id}`;
+  //   const url = `${window.location.origin}/company/ReceiptPrint_MMS?id=${id}`;
   //   window.open(url, "_blank");
   //   setPrint(false);
   // };
@@ -185,7 +181,7 @@ export default function Receipts() {
     // 🔥 reset Autocomplete values
     setSelectedClass(null);
     setSelectedSection(null);
-    setSelectedStudent(null);
+    setSelectedCustomer(null);
     setSelectedSalesinvoice(null);
     setSelectedYear(null);
     setIsDataValid(true);
@@ -282,7 +278,7 @@ export default function Receipts() {
         receiptDetails: receiptDetails.map((row) => ({
           class: row.class,
           section: row.section,
-          student: row.student._id,
+          customer: row.customer._id,
           parent: row.parent,
           siId: row.siId._id,
           siCode: row.siId.siCode,
@@ -336,7 +332,7 @@ export default function Receipts() {
 
   const [month, setMonth] = useState([]);
   const [year, setYear] = useState([]);
-  const fetchStudentReceipt = () => {
+  const fetchCustomerReceipt = () => {
     // axios
     //   .get(`${baseUrl}/casting/get-month-year`)
     //   .then((resp) => {
@@ -349,12 +345,12 @@ export default function Receipts() {
     //   });
   };
 
-  const fetchstudentsreceipt = () => {
+  const fetchcustomersreceipt = () => {
     axios
       .get(`${baseUrl}/receipt/fetch-all`)
       .then((resp) => {
         console.log("Fetching data in  Casting Calls  admin.", resp);
-        setStudentReceipt(resp.data.data);
+        setCustomerReceipt(resp.data.data);
       })
       .catch((e) => {
         console.log("Error in fetching casting calls admin data", e);
@@ -366,7 +362,7 @@ export default function Receipts() {
       console.log("attendee", attendee);
       setAttendeeClass(attendee.data.data);
     } catch (error) {
-      console.error("Error fetching students or checking attendance:", error);
+      console.error("Error fetching customers or checking attendance:", error);
     }
   };
   const fetchSection = async () => {
@@ -375,45 +371,45 @@ export default function Receipts() {
       console.log("sections", sections);
       setSection(sections.data.data);
     } catch (error) {
-      console.error("Error fetching students or checking attendance:", error);
+      console.error("Error fetching customers or checking attendance:", error);
     }
   };
 
-  const fetchStudents = async () => {
+  const fetchCustomers = async () => {
     try {
-      const studentsResponse = await axios.get(
-        `${baseUrl}/student/fetch-with-query`,
+      const customersResponse = await axios.get(
+        `${baseUrl}/customer/fetch-with-query`,
       ); // Fetch based on class
-      setStudents(studentsResponse.data.data);
+      setCustomers(customersResponse.data.data);
     } catch (error) {
-      console.error("Error fetching students or checking attendance:", error);
+      console.error("Error fetching customers or checking attendance:", error);
     }
   };
 
   const fetchSalesInvoices = async () => {
     try {
-      if (!selectedStudent?._id) return;
+      if (!selectedCustomer?._id) return;
       const invoicesResponse = await axios.get(
-        `${baseUrl}/salesinvoice/fetch-student-invoice`,
+        `${baseUrl}/salesinvoice/fetch-customer-invoice`,
         {
           params: {
-            student: selectedStudent?._id,
+            customer: selectedCustomer?._id,
           },
         },
-      ); // Fetch based on Student
+      ); // Fetch based on Customer
       setSalesinvoices(invoicesResponse.data.data);
     } catch (error) {
       setSalesinvoices([]);
-      console.error("Error fetching students or checking attendance:", error);
+      console.error("Error fetching customers or checking attendance:", error);
     }
   };
 
   useEffect(() => {
-    fetchstudentsreceipt();
-    fetchStudentReceipt();
+    fetchcustomersreceipt();
+    fetchCustomerReceipt();
     fetchClass();
     fetchSection();
-    fetchStudents();
+    fetchCustomers();
   }, [message]);
 
   useEffect(() => {
@@ -426,13 +422,13 @@ export default function Receipts() {
 
   useEffect(() => {
     fetchSalesInvoices();
-  }, [selectedStudent]);
+  }, [selectedCustomer]);
 
   const handleChange = (index, field, value) => {
     const updated = [...receiptDetails];
     updated[index][field] = value;
 
-    if (field === "student") {
+    if (field === "customer") {
       updated[index].siId = null; // 👈 clears invoice
       updated[index].siCode = ""; // 👈 clears invoice
       updated[index].month = ""; // 👈 clears invoice
@@ -471,7 +467,7 @@ export default function Receipts() {
       {
         class: null,
         section: null,
-        student: null,
+        customer: null,
         parent: null,
         siId: null,
         invAmount: 0,
@@ -611,43 +607,6 @@ export default function Receipts() {
                         )}
                     </Box>
 
-                    {/* Academic Year */}
-                    <Box>
-                      <Autocomplete
-                        disabled={isEdit}
-                        options={years}
-                        getOptionLabel={(option) => option.label}
-                        value={selectedYear}
-                        onChange={(event, newValue) => {
-                          setSelectedYear(newValue);
-
-                          Formik.setFieldValue(
-                            "year",
-                            newValue ? newValue.value : "",
-                          );
-                          Formik.setFieldValue(
-                            "academicyear",
-                            newValue ? newValue.label : "",
-                          );
-                        }}
-                        onBlur={() => Formik.setFieldTouched("year", true)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Academic Year"
-                            placeholder="Search year..."
-                            fullWidth
-                            error={
-                              Formik.touched.year && Boolean(Formik.errors.year)
-                            }
-                            helperText={
-                              Formik.touched.year && Formik.errors.year
-                            }
-                          />
-                        )}
-                      />
-                    </Box>
-
                     <Box>
                       <TextField
                         select
@@ -753,29 +712,28 @@ export default function Receipts() {
                           mb: 1,
                         }}
                       >
-                        {/* Student */}
-                        {students.length > 0 && (
-                          <Box>
-                            <Autocomplete
-                              disabled={row.isEdit}
-                              options={students}
-                              getOptionLabel={(option) => option.name}
-                              value={row.student}
-                              onChange={(event, newValue) => {
-                                setSelectedStudent(newValue);
-                                handleChange(index, "student", newValue);
-                              }}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  label="Select Student"
-                                  placeholder="Search student..."
-                                  fullWidth
-                                />
-                              )}
-                            />
-                          </Box>
-                        )}
+                        {/* Customer */}
+
+                        <Box>
+                          <Autocomplete
+                            disabled={row.isEdit}
+                            options={customers}
+                            getOptionLabel={(option) => option.name}
+                            value={row.customer}
+                            onChange={(event, newValue) => {
+                              setSelectedCustomer(newValue);
+                              handleChange(index, "customer", newValue);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Select Customer"
+                                placeholder="Search customer..."
+                                fullWidth
+                              />
+                            )}
+                          />
+                        </Box>
 
                         {/* Salesinvoices */}
 
@@ -912,7 +870,7 @@ export default function Receipts() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {studentReceipt.map((value, i) => (
+                    {customerReceipt.map((value, i) => (
                       <TableRow
                         key={i}
                         sx={{

@@ -106,20 +106,20 @@ import NoticeParent from "./parent/components/notice/NoticeParent";
 import SchoolReports from "./school/components/reports/SchoolReports";
 import SchoolReportsPrint from "./school/components/reports/SchoolReportsPrint";
 import ProgressCardPDF from "./school/components/reports/ProgressCardPDF";
-import ExpensePrint from "./school/components/expenses/ExpensePrint";
-import FinanceReports from "./school/components/reports/FinanceReports";
-import FinanceReportsPrint from "./school/components/reports/FinanceReportsPrint";
-import ExpenseReportPrint from "./school/components/reports/ExpenseReportPrint";
-import IncomeReportPrint from "./school/components/reports/IncomeReportPrint";
+import ExpensePrint from "./company/components/expenses/ExpensePrint";
+import FinanceReports from "./company/components/reports/FinanceReports";
+import FinanceReportsPrint from "./company/components/reports/FinanceReportsPrint";
+import ExpenseReportPrint from "./company/components/reports/ExpenseReportPrint";
+import IncomeReportPrint from "./company/components/reports/IncomeReportPrint";
 import QuestionpaperReportPrint from "./school/components/reports/QuestionpaperReportPrint";
-import ChartOfAccountReportPrint from "./school/components/reports/ChartOfAccountReportPrint";
+import ChartOfAccountReportPrint from "./company/components/reports/ChartOfAccountReportPrint";
 
-import TrialBalanceReportPrint from "./school/components/reports/TrialBalanceReportPrint";
-import ProfitOrLossReportPrint from "./school/components/reports/ProfitOrLossReportPrint";
-import BalanceSheetReportPrint from "./school/components/reports/BalanceSheetReportPrint";
+import TrialBalanceReportPrint from "./company/components/reports/TrialBalanceReportPrint";
+import ProfitOrLossReportPrint from "./company/components/reports/ProfitOrLossReportPrint";
+import BalanceSheetReportPrint from "./company/components/reports/BalanceSheetReportPrint";
 
 import StatementOfAccountStudentReportPrint from "./school/components/reports/StatementOfAccountStudentReportPrint";
-import StatementOfAccountLedgerReportPrint from "./school/components/reports/StatementOfAccountLedgerReportPrint";
+import StatementOfAccountLedgerReportPrint from "./company/components/reports/StatementOfAccountLedgerReportPrint";
 
 import StudentListReportPrint from "./school/components/reports/StudentListReportPrint";
 import ParentListReportPrint from "./school/components/reports/ParentListReportPrint";
@@ -135,6 +135,7 @@ import PaidFeesReportPrint from "./school/components/reports/PaidFeesReportPrint
 import Purchaseinvoice from "./company/components/purchaseinvoices/Purchaseinvoices";
 import PurchaseinvoicePrint from "./company/components/purchaseinvoices/PurchaseinvoicePrint";
 
+import SupplierPayments from "./company/components/payments/SupplierPayments";
 import Payments from "./company/components/payments/Payments";
 import PaymentPrint from "./company/components/payments/PaymentPrint";
 import PendingExpensesReportPrint from "./company/components/reports/PendingExpensesReportPrint";
@@ -152,24 +153,24 @@ import TransfercertificatePrint from "./school/components/transfercertificates/T
 import CastecertificatePrint from "./school/components/castecertificates/CastecertificatePrint";
 
 import Attendees from "./school/components/Attendees/Attendees";
-import Uploaddata from "./school/components/uploaddata/Uploaddata";
+import Uploaddata from "./company/components/uploaddata/Uploaddata";
 import Enquiry from "./school/components/enquiry/Enquiry";
 import EnquiryPrint from "./school/components/enquiry/EnquiryPrint";
 import StudentMarksSubjectwisePrint from "./school/components/reports/StudentMarksSubjectwisePrint";
 import StudentListMarksSubjectwisePrint from "./school/components/reports/StudentListMarksSubjectwisePrint";
-import Sendwhatsapp from "./school/components/sendwhatsapp/Sendwhatsapp";
+import Sendwhatsapp from "./company/components/sendwhatsapp/Sendwhatsapp";
 import ProgressCardPrint from "./school/components/reports/ProgressCardPrint";
 import Grades from "./school/components/grades/Grades";
-import Taxrates from "./school/components/taxrates/Taxrates";
+import Taxrates from "./company/components/taxrates/Taxrates";
 import GradeListReportPrint from "./school/components/reports/GradeListReportPrint";
 import AttendanceSummaryPrint from "./school/components/reports/AttendanceSummaryPrint";
-import Workingdays from "./school/components/workingdays/Workingdays";
+import Workingdays from "./company/components/workingdays/Workingdays";
 import Classsubject from "./school/components/classsubject/Classsubject";
 import StudentGraphPrint from "./school/components/reports/StudentGraphPrint";
 import StudentResultGraphPrint from "./school/components/reports/StudentResultGraphPrint";
 import StudentSubjectGraphPrint from "./school/components/reports/StudentSubjectGraphPrint";
-import JournalvoucherPrint from "./school/components/journalvouchers/JournalvoucherPrint";
-import Accountsetups from "./school/components/accountsetups/Accountsetups";
+import JournalvoucherPrint from "./company/components/journalvouchers/JournalvoucherPrint";
+import Accountsetups from "./company/components/accountsetups/Accountsetups";
 
 function App() {
   const { authenticated, login, themeDark } = useContext(AuthContext);
@@ -428,6 +429,7 @@ function App() {
                 path="purchaseinvoiceprint"
                 element={<PurchaseinvoicePrint />}
               />
+              <Route path="supplierpayment" element={<SupplierPayments />} />
               <Route path="payment" element={<Payments />} />
               <Route path="paymentprint" element={<PaymentPrint />} />
               <Route path="expensetype" element={<Expensetypes />} />
