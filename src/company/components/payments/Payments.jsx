@@ -49,7 +49,6 @@ export default function Payments() {
   const [expenses, setExpenses] = useState([]);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [tab, setTab] = useState(0);
-  const [selectedYear, setSelectedYear] = useState(null);
 
   const years = Array.from({ length: 10 }, (_, i) => {
     const year = new Date().getFullYear() - i;
@@ -122,9 +121,6 @@ export default function Payments() {
         Formik.setFieldValue("remarks", resp.data.data.remarks);
         Formik.setFieldValue("year", resp.data.data.year);
 
-        const matchedYear = years.find((s) => s.value === resp.data.data.year);
-        setSelectedYear(matchedYear || null);
-
         setEditId(resp.data.data._id);
 
         const editPaymentDetails = resp.data.data.paymentDetails.map((row) => ({
@@ -140,21 +136,22 @@ export default function Payments() {
       });
   };
 
-  // const handlePrint = async (id) => {
-  //     console.log("Handle  Print is called", id);
-  //     setPrint(true);
-
-  //     window.open(`/school/PaymentPrint?id=${id}`,
-  //         '_blank');
-  //     setPrint(false);
-
-  // };
-
   const handlePrint = (id) => {
+    // setPrint(true);
+    // const url = `${window.location.origin}/company/PaymentPrint?id=${id}`;
+    // window.open(url, "_blank");
+    // setPrint(false);
+    console.log("Handle  Print is called", id);
     setPrint(true);
-    const url = `${window.location.origin}/school/PaymentPrint?id=${id}`;
-    window.open(url, "_blank");
-    setPrint(false);
+
+    const data = {
+      id: id,
+    };
+
+    window.open(
+      `/company/PaymentPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+      "_blank",
+    );
   };
 
   const cancelEdit = () => {
@@ -164,7 +161,7 @@ export default function Payments() {
     // 🔥 reset Autocomplete values
     setSelectedEmployee(null);
     setSelectedExpense(null);
-    setSelectedYear(null);
+
     setIsDataValid(true);
     // 🔥 reset Autocomplete values
     clearPaymentDetails();
@@ -522,39 +519,6 @@ export default function Payments() {
                             {Formik.errors.paymentDate}
                           </Typography>
                         )}
-                    </Box>
-
-                    {/* Academic Year */}
-                    <Box>
-                      <Autocomplete
-                        disabled={isEdit}
-                        options={years}
-                        getOptionLabel={(option) => option.label}
-                        value={selectedYear}
-                        onChange={(event, newValue) => {
-                          setSelectedYear(newValue);
-
-                          Formik.setFieldValue(
-                            "year",
-                            newValue ? newValue.value : "",
-                          );
-                        }}
-                        onBlur={() => Formik.setFieldTouched("year", true)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Academic Year"
-                            placeholder="Search year..."
-                            fullWidth
-                            error={
-                              Formik.touched.year && Boolean(Formik.errors.year)
-                            }
-                            helperText={
-                              Formik.touched.year && Formik.errors.year
-                            }
-                          />
-                        )}
-                      />
                     </Box>
 
                     <Box>

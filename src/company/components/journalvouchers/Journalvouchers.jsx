@@ -61,7 +61,6 @@ export default function Journalvouchers() {
   const [selectedAmounttype, setSelectedAmounttype] = useState(null);
 
   const [tab, setTab] = useState(0);
-  const [selectedYear, setSelectedYear] = useState(null);
 
   const [journalvoucherAmountTotal, setJournalvoucherAmountTotal] = useState(0);
 
@@ -135,8 +134,6 @@ export default function Journalvouchers() {
 
         Formik.setFieldValue("remarks", resp.data.data.remarks);
         Formik.setFieldValue("year", resp.data.data.year);
-        const matchedYear = years.find((s) => s.value === resp.data.data.year);
-        setSelectedYear(matchedYear || null);
 
         Formik.setFieldValue("dr_amount", resp.data.data?.dr_amount || 0);
         Formik.setFieldValue("cr_amount", resp.data.data?.dr_amount || 0);
@@ -166,11 +163,11 @@ export default function Journalvouchers() {
     };
 
     window.open(
-      `/school/JournalvoucherPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+      `/company/JournalvoucherPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
       "_blank",
     );
 
-    // window.open(`/school/JournalvoucherPrint?id=${id}`,
+    // window.open(`/company/JournalvoucherPrint?id=${id}`,
     //     '_blank');
     setPrint(false);
   };
@@ -179,7 +176,7 @@ export default function Journalvouchers() {
     console.log("Handle  Print is called", id);
     setPrint(true);
 
-    window.open(`/school/JournalvoucherPrint?id=${id}`, "_blank");
+    window.open(`/company/JournalvoucherPrint?id=${id}`, "_blank");
     setPrint(false);
   };
   const cancelEdit = () => {
@@ -189,7 +186,7 @@ export default function Journalvouchers() {
     // 🔥 reset Autocomplete values
     setSelectedAccountledger(null);
     setSelectedAmounttype(null);
-    setSelectedYear(null);
+
     setIsDataValid(true);
     // 🔥 reset Autocomplete values
     clearJournalvoucherDetails();
@@ -270,7 +267,6 @@ export default function Journalvouchers() {
           account_type: row?.account_type?.value || row?.account_type,
           jv_amount: row?.jv_amount || 0,
           remarks: "",
-          // employee: values.employee,
           year: values.year,
         })),
       };
@@ -426,10 +422,7 @@ export default function Journalvouchers() {
 
     if (field === "accountledger") {
       updated[index].account_type = updated[index]?.accountledger?.account_type;
-      
     }
-
-   
 
     setJournalvoucherDetails(updated);
   };
@@ -557,68 +550,6 @@ export default function Journalvouchers() {
                         </Typography>
                       )}
                     </Box>
-
-                    {/* Academic Year */}
-                    <Box>
-                      <Autocomplete
-                        // disabled={isEdit}
-                        options={years}
-                        getOptionLabel={(option) => option.label}
-                        value={selectedYear}
-                        onChange={(event, newValue) => {
-                          setSelectedYear(newValue);
-
-                          Formik.setFieldValue(
-                            "year",
-                            newValue ? newValue.value : "",
-                          );
-                        }}
-                        onBlur={() => Formik.setFieldTouched("year", true)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Academic Year"
-                            placeholder="Search year..."
-                            fullWidth
-                            error={
-                              Formik.touched.year && Boolean(Formik.errors.year)
-                            }
-                            helperText={
-                              Formik.touched.year && Formik.errors.year
-                            }
-                          />
-                        )}
-                      />
-                    </Box>
-
-                    {/* Employees */}
-
-                    {/* <Box>
-                                            <Autocomplete
-                                                disabled={isEdit}
-                                                options={employees}
-                                                getOptionLabel={(option) => option.employee_name}
-                                                value={selectedEmployee}
-                                                onChange={(event, newValue) => {
-                                                    setSelectedEmployee(newValue);
-                                                    Formik.setFieldValue(
-                                                        "employee",
-                                                        newValue ? newValue._id : ""
-                                                    );
-
-                                                }}
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        label="Select Employee"
-                                                        placeholder="Search employee..."
-                                                        fullWidth
-
-                                                    />
-                                                )}
-                                            />
-
-                                        </Box> */}
 
                     <Box>
                       <TextField

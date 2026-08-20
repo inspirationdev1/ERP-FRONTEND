@@ -181,10 +181,7 @@ export default function Login() {
                 value={loginType}
                 onChange={handleSelection}
               >
-                {/* <MenuItem value="student">Student</MenuItem>
-                <MenuItem value="teacher">Teacher</MenuItem> */}
                 <MenuItem value="company_owner">Admin/Owner</MenuItem>
-                {/* <MenuItem value="parent">Parent</MenuItem> */}
                 <MenuItem value="user">User</MenuItem>
               </Select>
             </FormControl>

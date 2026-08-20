@@ -98,76 +98,6 @@ export default function JournalvoucherPrint() {
     }
   };
 
-  const downloadReportExcel = async () => {
-    let paramsRpt = {};
-
-    if (selectedClass) {
-      paramsRpt.class = selectedClass;
-    }
-    if (selectedSection) {
-      paramsRpt.section = selectedSection;
-    }
-
-    paramsRpt.requesttype = "EXL";
-    const reportResponse = await axios.post(
-      `${baseUrl}/schoolreports/student-list-print`,
-      {}, // ✅ empty body
-      {
-        params: paramsRpt, // ✅ goes to req.query
-      },
-    );
-    console.log("reportResponse", reportResponse.data.data);
-
-    if (reportResponse.data.data.length === 0) {
-      setMessage("No Data Found");
-      setType("error");
-      setLoading(false);
-      return;
-    }
-    // 1️⃣ Prepare Header
-
-    const sheetData = [];
-    sheetData.push([
-      "Student Name",
-      "Gender",
-      "Parent Name",
-      "DOB Date",
-      "Admission Date",
-      "Class",
-      "Section",
-      "Phone #",
-      "Pen #",
-      "Aadhar #",
-    ]);
-
-    // 📥 Data Rows
-    reportResponse.data.data.forEach((row) => {
-      sheetData.push([
-        row?.name,
-        row?.gender,
-        row?.parent?.name,
-        dayjs(row.dOBDate).format("DD-MM-YYYY"),
-        dayjs(row.joinDate).format("DD-MM-YYYY"),
-        row?.student_class?.class_name,
-        row?.section?.section_name,
-        row?.guardian_phone,
-        row?.pen_no,
-        row?.aadhar_no,
-      ]);
-    });
-
-    // 3️⃣ Create worksheet
-    const worksheet = XLSX.utils.json_to_sheet(sheetData);
-
-    // 4️⃣ Create workbook
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Journalvoucher");
-
-    const date = new Date();
-    // 5️⃣ Download
-    XLSX.writeFile(workbook, `Studenttlist_${date}.xlsx`);
-  };
-
   if (loading) {
     return <Typography>Loading...</Typography>;
   }
@@ -207,13 +137,6 @@ export default function JournalvoucherPrint() {
             >
               Download PDF
             </button>
-
-            {/* <button
-            className="flex items-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-            onClick={downloadReportExcel}
-          >
-            Download Excel
-          </button> */}
           </div>
         )}
       </div>

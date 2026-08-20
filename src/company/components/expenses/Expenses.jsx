@@ -53,7 +53,6 @@ export default function Expenses() {
   const [expensetypes, setExpensetypes] = useState([]);
   const [selectedExpensetype, setSelectedExpensetype] = useState(null);
   const [tab, setTab] = useState(0);
-  const [selectedYear, setSelectedYear] = useState(null);
 
   const [expenseAmountTotal, setExpenseAmountTotal] = useState(0);
 
@@ -135,8 +134,6 @@ export default function Expenses() {
 
         Formik.setFieldValue("remarks", resp.data.data.remarks);
         Formik.setFieldValue("year", resp.data.data.year);
-        const matchedYear = years.find((s) => s.value === resp.data.data.year);
-        setSelectedYear(matchedYear || null);
 
         Formik.setFieldValue(
           "expenseAmount",
@@ -170,22 +167,15 @@ export default function Expenses() {
     };
 
     window.open(
-      `/school/ExpensePrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+      `/company/ExpensePrint?data=${encodeURIComponent(JSON.stringify(data))}`,
       "_blank",
     );
 
-    // window.open(`/school/ExpensePrint?id=${id}`,
-    //     '_blank');
+    
     setPrint(false);
   };
 
-  const handleExpense = async (id) => {
-    console.log("Handle  Print is called", id);
-    setPrint(true);
-
-    window.open(`/school/ExpensePrint?id=${id}`, "_blank");
-    setPrint(false);
-  };
+  
   const cancelEdit = () => {
     setEdit(false);
     setEditId(null);
@@ -202,7 +192,7 @@ export default function Expenses() {
     setEdit(false);
     setEditId(null);
     setSelectedEmployee(null);
-    setSelectedYear(null);
+
     Formik.resetForm();
     // 🔥 reset Autocomplete values
     clearExpenseDetails();
@@ -527,39 +517,6 @@ export default function Expenses() {
                             {Formik.errors.expenseDate}
                           </Typography>
                         )}
-                    </Box>
-
-                    {/* Academic Year */}
-                    <Box>
-                      <Autocomplete
-                        // disabled={isEdit}
-                        options={years}
-                        getOptionLabel={(option) => option.label}
-                        value={selectedYear}
-                        onChange={(event, newValue) => {
-                          setSelectedYear(newValue);
-
-                          Formik.setFieldValue(
-                            "year",
-                            newValue ? newValue.value : "",
-                          );
-                        }}
-                        onBlur={() => Formik.setFieldTouched("year", true)}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Select Academic Year"
-                            placeholder="Search year..."
-                            fullWidth
-                            error={
-                              Formik.touched.year && Boolean(Formik.errors.year)
-                            }
-                            helperText={
-                              Formik.touched.year && Formik.errors.year
-                            }
-                          />
-                        )}
-                      />
                     </Box>
 
                     {/* Employees */}
