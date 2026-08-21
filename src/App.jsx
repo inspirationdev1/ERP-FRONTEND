@@ -171,6 +171,7 @@ import StudentResultGraphPrint from "./school/components/reports/StudentResultGr
 import StudentSubjectGraphPrint from "./school/components/reports/StudentSubjectGraphPrint";
 import JournalvoucherPrint from "./company/components/journalvouchers/JournalvoucherPrint";
 import Accountsetups from "./company/components/accountsetups/Accountsetups";
+import SupplierPaymentPrint from "./company/components/payments/SupplierPaymentPrint";
 
 function App() {
   const { authenticated, login, themeDark } = useContext(AuthContext);
@@ -430,6 +431,10 @@ function App() {
                 element={<PurchaseinvoicePrint />}
               />
               <Route path="supplierpayment" element={<Supplierpayments />} />
+              <Route
+                path="supplierpaymentprint"
+                element={<SupplierPaymentPrint />}
+              />
               <Route path="payment" element={<Payments />} />
               <Route path="paymentprint" element={<PaymentPrint />} />
               <Route path="expensetype" element={<Expensetypes />} />

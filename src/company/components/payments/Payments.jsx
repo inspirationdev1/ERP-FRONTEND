@@ -137,10 +137,7 @@ export default function Payments() {
   };
 
   const handlePrint = (id) => {
-    // setPrint(true);
-    // const url = `${window.location.origin}/company/PaymentPrint?id=${id}`;
-    // window.open(url, "_blank");
-    // setPrint(false);
+    
     console.log("Handle  Print is called", id);
     setPrint(true);
 

@@ -20,7 +20,7 @@ import { saveAs } from "file-saver";
 import dayjs from "dayjs";
 import CustomizedSnackbars from "../../../basic utility components/CustomizedSnackbars";
 
-export default function PaymentPrint() {
+export default function SupplierPaymentPrint() {
   const [loading, setLoading] = useState(true);
   const [printData, setPrintData] = useState([]);
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -65,7 +65,7 @@ export default function PaymentPrint() {
         paramsRpt.requesttype = "PDF";
 
         const response = await axios.post(
-          `${baseUrl}/printreports/print-payment`,
+          `${baseUrl}/printreports/print-supplierpayment`,
           {}, // body (empty or your params)
           {
             params: paramsRpt, // ✅ query params

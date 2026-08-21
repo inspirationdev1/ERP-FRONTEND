@@ -28,7 +28,7 @@ import axios from "axios";
 import { baseUrl } from "../../../environment";
 import CustomizedSnackbars from "../../../basic utility components/CustomizedSnackbars";
 import { supplierpaymentSchema } from "../../../yupSchema/supplierpaymentSchema";
-import PaymentPrint from "./PaymentPrint";
+import SupplierPaymentPrint from "./SupplierPaymentPrint";
 
 export default function Supplierpayments() {
   const [isDataValid, setIsDataValid] = useState(true);
@@ -141,10 +141,17 @@ export default function Supplierpayments() {
   };
 
   const handlePrint = (id) => {
+    console.log("Handle  Print is called", id);
     setPrint(true);
-    const url = `${window.location.origin}/school/PaymentPrint?id=${id}`;
-    window.open(url, "_blank");
-    setPrint(false);
+
+    const data = {
+      id: id,
+    };
+
+    window.open(
+      `/company/SupplierPaymentPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+      "_blank",
+    );
   };
 
   const cancelEdit = () => {
