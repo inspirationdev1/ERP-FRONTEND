@@ -80,10 +80,6 @@ export default function Company() {
         { label: "Item Types", link: "/company/itemtype" },
         { label: "Items", link: "/company/item" },
         { label: "Geo Locations", link: "/company/geolocation" },
-        // { label: "Periods", link: "/company/period" },
-        // { label: "Schedule", link: "/company/periods" },
-        // { label: "Attendee", link: "/company/attendee" },
-        // { label: "Notice", link: "/company/notice" },
       ],
     },
     {
@@ -93,7 +89,7 @@ export default function Company() {
         { label: "Customers", link: "/company/customers" },
         { label: "Sales Invoice", link: "/company/salesinvoice" },
         { label: "Receipts", link: "/company/receipt" },
-        { label: "Reports", link: "/company/studentreports" },
+        { label: "Reports", link: "/company/salesreports" },
       ],
     },
     {
@@ -103,20 +99,10 @@ export default function Company() {
         { label: "Suppliers", link: "/company/suppliers" },
         { label: "Purchase Invoice", link: "/company/purchaseinvoice" },
         { label: "Payments", link: "/company/supplierpayment" },
-        { label: "Reports", link: "/company/studentreports" },
+        { label: "Reports", link: "/company/purchasereports" },
       ],
     },
-    // {
-    //   label: "Exam",
-    //   icon: MenuBookIcon,
-    //   children: [
-    //     { label: "Examinations", link: "/company/examinations" },
-    //     { label: "Questionpapers", link: "/company/questionpapers" },
-    //     { label: "Marksheets", link: "/company/marksheet" },
-    //     { label: "Grades", link: "/company/grades" },
-    //     { label: "Reports", link: "/company/companyreports" },
-    //   ],
-    // },
+
     {
       label: "Staffs",
       icon: GroupIcon,
@@ -312,7 +298,6 @@ export default function Company() {
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-
                 fontSize: { xs: 16, md: 22 },
                 fontWeight: 600,
               }}

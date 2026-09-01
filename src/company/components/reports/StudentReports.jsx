@@ -133,27 +133,27 @@ export default function StudentReports() {
     } else {
       if (selectedReport.reportId === "attendance-report") {
         window.open(
-          `/school/AttendanceReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+          `/company/AttendanceReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
           "_blank"
         );
       } else if (selectedReport.reportId === "progresscard-report") {
           window.open(
-          `/school/SchoolReportsPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+          `/company/SchoolReportsPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
           "_blank"
         );
       }else if (selectedReport.reportId === "questionpaper-report") {
           window.open(
-          `/school/QuestionpaperReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+          `/company/QuestionpaperReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
           "_blank"
         );
       }else if (selectedReport.reportId === "student-list-report") {
           window.open(
-          `/school/StudentListReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+          `/company/StudentListReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
           "_blank"
         );
       }else if (selectedReport.reportId === "parent-list-report") {
           window.open(
-          `/school/ParentListReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+          `/company/ParentListReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
           "_blank"
         );
       }
