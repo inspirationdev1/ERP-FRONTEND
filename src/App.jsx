@@ -180,6 +180,8 @@ import SalesSummaryCustomerPrint from "./company/components/reports/SalesSummary
 import PurchaseSummarySupplierPrint from "./company/components/reports/PurchaseSummarySupplierPrint";
 import SalesSummaryItemPrint from "./company/components/reports/SalesSummaryItemPrint";
 import PurchaseSummaryItemPrint from "./company/components/reports/PurchaseSummaryItemPrint";
+import SalesInvoiceListPrint from "./company/components/reports/SalesInvoiceListPrint";
+import PurchaseInvoiceListPrint from "./company/components/reports/PurchaseInvoiceListPrint";
 
 function App() {
   const { authenticated, login, themeDark } = useContext(AuthContext);
@@ -252,6 +254,10 @@ function App() {
                 element={<SalesSummaryItemPrint />}
               />
               <Route
+                path="salesinvoicelistprint"
+                element={<SalesInvoiceListPrint />}
+              />
+              <Route
                 path="purchasesummarysupplierprint"
                 element={<PurchaseSummarySupplierPrint />}
               />
@@ -259,6 +265,11 @@ function App() {
                 path="purchasesummaryitemprint"
                 element={<PurchaseSummaryItemPrint />}
               />
+              <Route
+                path="purchaseinvoicelistprint"
+                element={<PurchaseInvoiceListPrint />}
+              />
+
               <Route path="customers" element={<Customers />} />
               <Route path="suppliers" element={<Suppliers />} />
               <Route path="employees" element={<Employees />} />
