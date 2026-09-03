@@ -33,6 +33,9 @@ export default function PurchaseReports() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
+  const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [sections, setSection] = useState([]);
@@ -71,7 +74,11 @@ export default function PurchaseReports() {
     let data = {};
 
     if (selectedSupplier) {
-      data.supplier = selectedSupplier._id;
+      data.supplier = selectedSupplier;
+    }
+
+    if (selectedItem) {
+      data.item = selectedItem;
     }
 
     if (fromDate) {
@@ -92,7 +99,7 @@ export default function PurchaseReports() {
       );
     } else if (selectedReport.reportId === "purchase-summary-item-report") {
       window.open(
-        `/company/SchoolReportsPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+        `/company/PurchaseSummaryItemPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
         "_blank",
       );
     } else if (selectedReport.reportId === "supplier-list-report") {
@@ -234,15 +241,25 @@ export default function PurchaseReports() {
     }
   };
 
-  useEffect(() => {
-    fetchReportNames();
-    fetchClass();
-    fetchSection();
-  }, [message]);
+  const fetchItems = async () => {
+    try {
+      const itemsResponse = await axios.get(
+        `${baseUrl}/item/fetch-with-query`,
+        {
+          params: {},
+        },
+      ); // Fetch based on class
+      setItems(itemsResponse.data.data);
+    } catch (error) {
+      console.error("Error fetching items", error);
+    }
+  };
 
   useEffect(() => {
+    fetchReportNames();
     fetchSuppliers();
-  }, []);
+    fetchItems();
+  }, [message]);
 
   return (
     <>
@@ -351,6 +368,44 @@ export default function PurchaseReports() {
                             }
                             helperText={
                               Formik.touched.supplier && Formik.errors.supplier
+                            }
+                          />
+                        )}
+                      />
+                    </Box>
+                  )}
+
+                {/* Items */}
+                {selectedReport &&
+                  (selectedReport.reportId ===
+                    "purchase-summary-supplier-report" ||
+                    selectedReport.reportId ===
+                      "purchase-summary-item-report") && (
+                    <Box>
+                      <Autocomplete
+                        options={items}
+                        getOptionLabel={(option) => option.name}
+                        value={selectedItem}
+                        onChange={(event, newValue) => {
+                          setSelectedItem(newValue);
+
+                          Formik.setFieldValue(
+                            "item",
+                            newValue ? newValue._id : "",
+                          );
+                        }}
+                        onBlur={() => Formik.setFieldTouched("item", true)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Item"
+                            placeholder="Search item..."
+                            fullWidth
+                            error={
+                              Formik.touched.item && Boolean(Formik.errors.item)
+                            }
+                            helperText={
+                              Formik.touched.item && Formik.errors.item
                             }
                           />
                         )}

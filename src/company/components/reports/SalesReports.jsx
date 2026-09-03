@@ -33,6 +33,8 @@ export default function SalesReports() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [sections, setSection] = useState([]);
@@ -71,7 +73,11 @@ export default function SalesReports() {
     let data = {};
 
     if (selectedCustomer) {
-      data.customer = selectedCustomer._id;
+      data.customer = selectedCustomer;
+    }
+
+    if (selectedItem) {
+      data.item = selectedItem;
     }
 
     if (fromDate) {
@@ -92,7 +98,7 @@ export default function SalesReports() {
       );
     } else if (selectedReport.reportId === "sales-summary-item-report") {
       window.open(
-        `/company/SchoolReportsPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+        `/company/SalesSummaryItemPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
         "_blank",
       );
     } else if (selectedReport.reportId === "customer-list-report") {
@@ -233,16 +239,25 @@ export default function SalesReports() {
       console.error("Error fetching customers or checking attendance:", error);
     }
   };
+  const fetchItems = async () => {
+    try {
+      const itemsResponse = await axios.get(
+        `${baseUrl}/item/fetch-with-query`,
+        {
+          params: {},
+        },
+      ); // Fetch based on class
+      setItems(itemsResponse.data.data);
+    } catch (error) {
+      console.error("Error fetching items", error);
+    }
+  };
 
   useEffect(() => {
     fetchReportNames();
-    fetchClass();
-    fetchSection();
-  }, [message]);
-
-  useEffect(() => {
     fetchCustomers();
-  }, []);
+    fetchItems();
+  }, [message]);
 
   return (
     <>
@@ -351,6 +366,44 @@ export default function SalesReports() {
                             }
                             helperText={
                               Formik.touched.customer && Formik.errors.customer
+                            }
+                          />
+                        )}
+                      />
+                    </Box>
+                  )}
+
+                {/* Items */}
+                {selectedReport &&
+                  (selectedReport.reportId ===
+                    "sales-summary-customer-report" ||
+                    selectedReport.reportId ===
+                      "sales-summary-item-report") && (
+                    <Box>
+                      <Autocomplete
+                        options={items}
+                        getOptionLabel={(option) => option.name}
+                        value={selectedItem}
+                        onChange={(event, newValue) => {
+                          setSelectedItem(newValue);
+
+                          Formik.setFieldValue(
+                            "item",
+                            newValue ? newValue._id : "",
+                          );
+                        }}
+                        onBlur={() => Formik.setFieldTouched("item", true)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Item"
+                            placeholder="Search item..."
+                            fullWidth
+                            error={
+                              Formik.touched.item && Boolean(Formik.errors.item)
+                            }
+                            helperText={
+                              Formik.touched.item && Formik.errors.item
                             }
                           />
                         )}
