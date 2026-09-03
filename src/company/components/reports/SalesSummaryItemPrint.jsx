@@ -20,7 +20,7 @@ import { saveAs } from "file-saver";
 import dayjs from "dayjs";
 import CustomizedSnackbars from "../../../basic utility components/CustomizedSnackbars";
 
-export default function SalesSummaryCustomerPrint() {
+export default function SalesSummaryItemPrint() {
   const [loading, setLoading] = useState(true);
   const [printData, setPrintData] = useState([]);
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -74,7 +74,7 @@ export default function SalesSummaryCustomerPrint() {
         }
 
         const response = await axios.get(
-          `${baseUrl}/salesreports/sales-summary-customer-print`,
+          `${baseUrl}/salesreports/sales-summary-item-print`,
           {
             params: paramsRpt, // ✅ query params
             responseType: "blob", // ✅ CORRECT PLACE

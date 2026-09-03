@@ -65,12 +65,16 @@ export default function PurchaseSummarySupplierPrint() {
           paramsRpt.toDate = data?.toDate;
         }
 
-        if (data?.customer) {
-          paramsRpt.customer = data?.customer;
+        if (data?.supplier) {
+          paramsRpt.supplier = data?.supplier;
+        }
+
+        if (data?.item) {
+          paramsRpt.item = data?.item;
         }
 
         const response = await axios.get(
-          `${baseUrl}/salesreports/sales-summary-customer-print`,
+          `${baseUrl}/purchasereports/purchase-summary-supplier-print`,
           {
             params: paramsRpt, // ✅ query params
             responseType: "blob", // ✅ CORRECT PLACE
@@ -103,7 +107,7 @@ export default function PurchaseSummarySupplierPrint() {
 
     paramsRpt.requesttype = "EXL";
     const reportResponse = await axios.get(
-      `${baseUrl}/salesreports/customer-list-print`,
+      `${baseUrl}/purchasereports/supplier-list-print`,
       {
         params: paramsRpt, // ✅ goes to req.query
       },
@@ -119,13 +123,13 @@ export default function PurchaseSummarySupplierPrint() {
     // 1️⃣ Prepare Header
 
     const sheetData = [];
-    sheetData.push(["Customer Name", "Code", "Date", "Phone #"]);
+    sheetData.push(["Supplier Name", "Code", "Date", "Phone #"]);
 
     // 📥 Data Rows
     reportResponse.data.data.forEach((row) => {
       sheetData.push([
         row?.name,
-        row?.customer_code,
+        row?.supplier_code,
         dayjs(row.joinDate).format("DD-MM-YYYY"),
         row?.phone_no,
       ]);
@@ -136,11 +140,11 @@ export default function PurchaseSummarySupplierPrint() {
 
     // 4️⃣ Create workbook
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Customerlist");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Supplierlist");
 
     const date = new Date();
     // 5️⃣ Download
-    XLSX.writeFile(workbook, `Customerlist_${date}.xlsx`);
+    XLSX.writeFile(workbook, `Supplierlist_${date}.xlsx`);
   };
 
   if (loading) {
@@ -163,7 +167,7 @@ export default function PurchaseSummarySupplierPrint() {
           {pdfUrl ? (
             <iframe
               src={`${pdfUrl}#zoom=page-width`}
-              title="Sales Summary Customer PDF"
+              title="Purchase Summary Supplier PDF"
               className="w-full h-full border-0"
               style={{
                 minHeight: "calc(100vh - 70px)",
@@ -183,7 +187,7 @@ export default function PurchaseSummarySupplierPrint() {
               onClick={() => {
                 const link = document.createElement("a");
                 link.href = pdfUrl;
-                link.download = "CustomerSalesSummary.pdf";
+                link.download = "SupplierPurchaseSummary.pdf";
                 link.click();
               }}
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
