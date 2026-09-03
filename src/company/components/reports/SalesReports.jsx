@@ -101,6 +101,11 @@ export default function SalesReports() {
         `/company/SalesSummaryItemPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
         "_blank",
       );
+    } else if (selectedReport.reportId === "sales-invoice-list-report") {
+      window.open(
+        `/company/SalesInvoiceListPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+        "_blank",
+      );
     } else if (selectedReport.reportId === "customer-list-report") {
       window.open(
         `/company/CustomerListReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
@@ -144,7 +149,8 @@ export default function SalesReports() {
 
       if (
         values.reportId == "sales-summary-customer-report" ||
-        values.reportId == "sales-summary-item-report"
+        values.reportId == "sales-summary-item-report" ||
+        values.reportId == "sales-invoice-list-report"
       ) {
         if (!values.fromDate || !values.toDate) {
           setDataError("Select From Date and To Date");
@@ -198,6 +204,10 @@ export default function SalesReports() {
         {
           reportId: "sales-summary-item-report",
           reportName: "Sales-Summary-Item Report",
+        },
+        {
+          reportId: "sales-invoice-list-report",
+          reportName: "Sales-Invoice-List Report",
         },
       ];
       console.log("Report Names", reportsData);
@@ -338,8 +348,9 @@ export default function SalesReports() {
                 {selectedReport &&
                   (selectedReport.reportId ===
                     "sales-summary-customer-report" ||
+                    selectedReport.reportId === "sales-summary-item-report" ||
                     selectedReport.reportId ===
-                      "sales-summary-item-report") && (
+                      "sales-invoice-list-report") && (
                     <Box>
                       <Autocomplete
                         options={customers}
@@ -377,8 +388,9 @@ export default function SalesReports() {
                 {selectedReport &&
                   (selectedReport.reportId ===
                     "sales-summary-customer-report" ||
+                    selectedReport.reportId === "sales-summary-item-report" ||
                     selectedReport.reportId ===
-                      "sales-summary-item-report") && (
+                      "sales-invoice-list-report") && (
                     <Box>
                       <Autocomplete
                         options={items}
@@ -450,8 +462,9 @@ export default function SalesReports() {
                 {selectedReport &&
                   (selectedReport.reportId ===
                     "sales-summary-customer-report" ||
+                    selectedReport.reportId === "sales-summary-item-report" ||
                     selectedReport.reportId ===
-                      "sales-summary-item-report") && (
+                      "sales-invoice-list-report") && (
                     <Box>
                       <TextField
                         label="From Date"
@@ -478,8 +491,9 @@ export default function SalesReports() {
                 {selectedReport &&
                   (selectedReport.reportId ===
                     "sales-summary-customer-report" ||
+                    selectedReport.reportId === "sales-summary-item-report" ||
                     selectedReport.reportId ===
-                      "sales-summary-item-report") && (
+                      "sales-invoice-list-report") && (
                     <Box>
                       <TextField
                         label="To Date"

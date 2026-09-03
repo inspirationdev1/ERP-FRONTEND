@@ -102,6 +102,11 @@ export default function PurchaseReports() {
         `/company/PurchaseSummaryItemPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
         "_blank",
       );
+    } else if (selectedReport.reportId === "purchase-invoice-list-report") {
+      window.open(
+        `/company/PurchaseInvoiceListPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
+        "_blank",
+      );
     } else if (selectedReport.reportId === "supplier-list-report") {
       window.open(
         `/company/SupplierListReportPrint?data=${encodeURIComponent(JSON.stringify(data))}`,
@@ -145,7 +150,8 @@ export default function PurchaseReports() {
 
       if (
         values.reportId == "purchase-summary-supplier-report" ||
-        values.reportId == "purchase-summary-item-report"
+        values.reportId == "purchase-summary-item-report" ||
+        values.reportId == "purchase-invoice-list-report"
       ) {
         if (!values.fromDate || !values.toDate) {
           setDataError("Select From Date and To Date");
@@ -199,6 +205,10 @@ export default function PurchaseReports() {
         {
           reportId: "purchase-summary-item-report",
           reportName: "Purchase-Summary-Item Report",
+        },
+        {
+          reportId: "purchase-invoice-list-report",
+          reportName: "Purchase-Invoice-List Report",
         },
       ];
       console.log("Report Names", reportsData);
@@ -341,7 +351,9 @@ export default function PurchaseReports() {
                   (selectedReport.reportId ===
                     "purchase-summary-supplier-report" ||
                     selectedReport.reportId ===
-                      "purchase-summary-item-report") && (
+                      "purchase-summary-item-report" ||
+                    selectedReport.reportId ===
+                      "purchase-invoice-list-report") && (
                     <Box>
                       <Autocomplete
                         options={suppliers}
@@ -380,7 +392,9 @@ export default function PurchaseReports() {
                   (selectedReport.reportId ===
                     "purchase-summary-supplier-report" ||
                     selectedReport.reportId ===
-                      "purchase-summary-item-report") && (
+                      "purchase-summary-item-report" ||
+                    selectedReport.reportId ===
+                      "purchase-invoice-list-report") && (
                     <Box>
                       <Autocomplete
                         options={items}
@@ -453,7 +467,9 @@ export default function PurchaseReports() {
                   (selectedReport.reportId ===
                     "purchase-summary-supplier-report" ||
                     selectedReport.reportId ===
-                      "purchase-summary-item-report") && (
+                      "purchase-summary-item-report" ||
+                    selectedReport.reportId ===
+                      "purchase-invoice-list-report") && (
                     <Box>
                       <TextField
                         label="From Date"
@@ -481,7 +497,9 @@ export default function PurchaseReports() {
                   (selectedReport.reportId ===
                     "purchase-summary-supplier-report" ||
                     selectedReport.reportId ===
-                      "purchase-summary-item-report") && (
+                      "purchase-summary-item-report" ||
+                    selectedReport.reportId ===
+                      "purchase-invoice-list-report") && (
                     <Box>
                       <TextField
                         label="To Date"
