@@ -175,7 +175,7 @@ export default function Generalmasters() {
         { generalmaster_type: "language", generalmaster_name: "Language" },
         {
           generalmaster_type: "modeoftransport",
-          generalmaster_name: "mode of transport",
+          generalmaster_name: "Mode of transport",
         },
         {
           generalmaster_type: "attachmenttype",
@@ -187,7 +187,15 @@ export default function Generalmasters() {
         },
         {
           generalmaster_type: "designation",
-          generalmaster_name: "designation",
+          generalmaster_name: "Designation",
+        },
+        {
+          generalmaster_type: "role",
+          generalmaster_name: "Role",
+        },
+        {
+          generalmaster_type: "menu",
+          generalmaster_name: "Menu",
         },
       ];
       setGeneralmastertypes(generalmastertypesData);
