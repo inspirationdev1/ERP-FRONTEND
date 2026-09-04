@@ -37,11 +37,33 @@ export default function Users() {
   const [isEdit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
 
+  const [roles, setRoles] = useState([]);
+  const [selectedRole, setSelectedRole] = useState(null);
+
   const [date, setDate] = useState(null);
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [tab, setTab] = useState(0);
   const [selectedYear, setSelectedYear] = useState(null);
+
+  const fetchGeneralMasters = async () => {
+    try {
+      const generalmasters = await axios.get(
+        `${baseUrl}/generalmaster/fetch-all`,
+      );
+      console.log("generalmasters", generalmasters);
+      let rolesData = generalmasters.data.data;
+      /* rolesData = rolesData.filter(
+        (generalmaster_type) => generalmaster_type === "role",
+      ); */
+      rolesData = rolesData.filter(
+        (row) => row.generalmaster_type.toString() === "role",
+      );
+      setRoles(rolesData);
+    } catch (error) {
+      console.error("Error fetching Roles:", error);
+    }
+  };
 
   const years = Array.from({ length: 10 }, (_, i) => {
     const year = new Date().getFullYear() - i;
@@ -49,11 +71,8 @@ export default function Users() {
   });
 
   const viewUploadFile = (fileName) => {
-
     const fileUrl = `${fileName}`;
     window.open(fileUrl, "_blank", "noopener,noreferrer");
-
-
   };
 
   const addImage = (event) => {
@@ -64,7 +83,6 @@ export default function Users() {
   };
 
   const [params, setParams] = useState({});
-
 
   const handleSearch = (e) => {
     let newParam;
@@ -102,18 +120,23 @@ export default function Users() {
         Formik.setFieldValue("email", resp.data.data.email);
         Formik.setFieldValue("name", resp.data.data.name);
         Formik.setFieldValue("user_code", resp.data.data?.user_code);
-        Formik.setFieldValue("qualification", resp.data.data.qualification)
-        Formik.setFieldValue("gender", resp.data.data.gender)
+        Formik.setFieldValue("qualification", resp.data.data.qualification);
+        Formik.setFieldValue("gender", resp.data.data.gender);
         // Formik.setFieldValue("age", resp.data.data.age);
-        Formik.setFieldValue("password", resp.data.data.password)
+        Formik.setFieldValue("password", resp.data.data.password);
 
-        Formik.setFieldValue("year", resp.data.data.year)
-        const matchedYear = years.find(s => s.value === resp.data.data.year);
+        Formik.setFieldValue("year", resp.data.data.year);
+        const matchedYear = years.find((s) => s.value === resp.data.data.year);
         setSelectedYear(matchedYear || null);
 
-        Formik.setFieldValue("dOBDate", resp.data.data.dOBDate?.split("T")[0] || "")
-        Formik.setFieldValue("joinDate", resp.data.data.joinDate?.split("T")[0] || "")
-
+        Formik.setFieldValue(
+          "dOBDate",
+          resp.data.data.dOBDate?.split("T")[0] || "",
+        );
+        Formik.setFieldValue(
+          "joinDate",
+          resp.data.data.joinDate?.split("T")[0] || "",
+        );
 
         // Auto calculate age
         const age = calculateAge(resp.data.data.dOBDate?.split("T")[0] || "");
@@ -151,7 +174,7 @@ export default function Users() {
   const cancelEdit = () => {
     setEdit(false);
     setSelectedYear(null);
-    Formik.resetForm()
+    Formik.resetForm();
   };
 
   //   CLEARING IMAGE FILE REFENCE FROM INPUT
@@ -164,7 +187,6 @@ export default function Users() {
     setImageUrl(null); // Clear the image preview
   };
 
-
   //   MESSAGE
   const [message, setMessage] = useState("");
   const [type, setType] = useState("succeess");
@@ -176,14 +198,14 @@ export default function Users() {
   const initialValues = {
     email: "",
     name: "",
-    user_code:"",
-    qualification: "",
-    gender: "",
-    age: "",
+    user_code: "",
+    // qualification: "",
+    // gender: "",
+    // age: "",
     password: "",
-    year: "",
-    dOBDate: "",
-    joinDate: "",
+    // year: "",
+    // dOBDate: "",
+    // joinDate: "",
   };
 
   const Formik = useFormik({
@@ -192,7 +214,6 @@ export default function Users() {
     onSubmit: (values) => {
       console.log("user calls admin Formik values", values);
       if (isEdit) {
-
         const fd = new FormData();
         Object.keys(values).forEach((key) => fd.append(key, values[key]));
         if (file) {
@@ -214,7 +235,6 @@ export default function Users() {
           });
       } else {
         if (file) {
-
           const fd = new FormData();
           fd.append("image", file, file.name);
           Object.keys(values).forEach((key) => fd.append(key, values[key]));
@@ -272,6 +292,7 @@ export default function Users() {
   };
   useEffect(() => {
     fetchusers();
+    fetchGeneralMasters();
     // fetchuserClass();
   }, [message, params]);
   return (
@@ -283,10 +304,7 @@ export default function Users() {
           message={message}
         />
       )}
-      <Box
-
-      >
-
+      <Box>
         <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}>
           <Tabs
             value={tab}
@@ -300,16 +318,11 @@ export default function Users() {
           </Tabs>
         </Box>
 
-
         {tab === 0 && (
           <Box component={"div"}>
-            <Paper
-              sx={{ padding: "20px", margin: "10px" }}
-            >
-
+            <Paper sx={{ padding: "20px", margin: "10px" }}>
               <Box component="form" onSubmit={Formik.handleSubmit}>
                 <Grid container spacing={2}>
-
                   {/* IMAGE FULL WIDTH */}
                   <Grid item xs={12}>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -383,8 +396,40 @@ export default function Users() {
                     )}
                   </Grid>
 
-                  {/* QUALIFICATION */}
+                  {/* Role */}
+
                   <Grid item xs={12} md={6}>
+                    <Autocomplete
+                      // disabled={isEdit}
+                      options={roles}
+                      getOptionLabel={(option) => option.generalmaster_name}
+                      value={selectedRole}
+                      onChange={(event, newValue) => {
+                        setSelectedRole(newValue);
+
+                        Formik.setFieldValue(
+                          "role",
+                          newValue ? newValue._id : "",
+                        );
+                      }}
+                      onBlur={() => Formik.setFieldTouched("role", true)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Select role"
+                          placeholder="Search role..."
+                          fullWidth
+                          error={
+                            Formik.touched.role && Boolean(Formik.errors.role)
+                          }
+                          helperText={Formik.touched.role && Formik.errors.role}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  {/* QUALIFICATION */}
+                  {/* <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
                       label="Qualification"
@@ -397,10 +442,10 @@ export default function Users() {
                         {Formik.errors.qualification}
                       </p>
                     )}
-                  </Grid>
+                  </Grid> */}
 
                   {/* GENDER */}
-                  <Grid item xs={12} md={6}>
+                  {/* <Grid item xs={12} md={6}>
                     <FormControl fullWidth>
                       <InputLabel>Gender</InputLabel>
                       <Select
@@ -419,10 +464,10 @@ export default function Users() {
                         {Formik.errors.gender}
                       </p>
                     )}
-                  </Grid>
+                  </Grid> */}
 
                   {/* DOB */}
-                  <Grid item xs={12} md={6}>
+                  {/* <Grid item xs={12} md={6}>
                     <TextField
                       name="dOBDate"
                       label="Date of Birth"
@@ -444,10 +489,10 @@ export default function Users() {
                         {Formik.errors.dOBDate}
                       </p>
                     )}
-                  </Grid>
+                  </Grid> */}
 
                   {/* AGE */}
-                  <Grid item xs={12} md={6}>
+                  {/* <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
                       label="Age"
@@ -460,10 +505,10 @@ export default function Users() {
                         {Formik.errors.age}
                       </Typography>
                     )}
-                  </Grid>
+                  </Grid> */}
 
                   {/* JOIN DATE */}
-                  <Grid item xs={12} md={6}>
+                  {/* <Grid item xs={12} md={6}>
                     <TextField
                       name="joinDate"
                       label="Join Date"
@@ -478,10 +523,10 @@ export default function Users() {
                         {Formik.errors.joinDate}
                       </p>
                     )}
-                  </Grid>
+                  </Grid> */}
 
                   {/* ACADEMIC YEAR */}
-                  <Grid item xs={12} md={6}>
+                  {/* <Grid item xs={12} md={6}>
                     <Autocomplete
                       options={years}
                       getOptionLabel={(option) => option.label}
@@ -502,7 +547,7 @@ export default function Users() {
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid> */}
 
                   {/* PASSWORD */}
                   {!isEdit && (
@@ -516,7 +561,9 @@ export default function Users() {
                         onChange={Formik.handleChange}
                       />
                       {Formik.touched.password && Formik.errors.password && (
-                        <p style={{ color: "red", textTransform: "capitalize" }}>
+                        <p
+                          style={{ color: "red", textTransform: "capitalize" }}
+                        >
                           {Formik.errors.password}
                         </p>
                       )}
@@ -535,15 +582,11 @@ export default function Users() {
                       </Button>
                     )}
                   </Grid>
-
                 </Grid>
               </Box>
-
             </Paper>
           </Box>
         )}
-
-        
 
         {tab === 1 && (
           <Box>
@@ -557,7 +600,6 @@ export default function Users() {
                 marginBottom: "5px",
               }}
             >
-              
               <TextField
                 label="Search Name .."
                 size="small"
@@ -573,13 +615,14 @@ export default function Users() {
                   },
                 }}
               />
-
             </Box>
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell component="th" scope="row">Name</TableCell>
+                    <TableCell component="th" scope="row">
+                      Name
+                    </TableCell>
                     <TableCell align="right">Email</TableCell>
                     <TableCell align="right">dOBDate</TableCell>
                     <TableCell align="right">JoinDate</TableCell>
@@ -590,16 +633,19 @@ export default function Users() {
                   {users.map((value, i) => (
                     <TableRow
                       key={i}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
                         {value.name}
                       </TableCell>
                       <TableCell align="right">{value?.email}</TableCell>
-                      <TableCell align="right">{dayjs(value?.dOBDate).format("DD/MM/YYYY")}</TableCell>
-                      <TableCell align="right">{dayjs(value?.joinDate).format("DD/MM/YYYY")}</TableCell>
                       <TableCell align="right">
-
+                        {dayjs(value?.dOBDate).format("DD/MM/YYYY")}
+                      </TableCell>
+                      <TableCell align="right">
+                        {dayjs(value?.joinDate).format("DD/MM/YYYY")}
+                      </TableCell>
+                      <TableCell align="right">
                         <Box
                           sx={{
                             display: "flex",
@@ -632,16 +678,13 @@ export default function Users() {
                           </Button>
                         </Box>
                       </TableCell>
-
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
-
           </Box>
         )}
-
       </Box>
     </>
   );
