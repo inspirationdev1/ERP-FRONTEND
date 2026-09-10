@@ -78,6 +78,7 @@ export default function Company() {
         // { label: "Class Subject", link: "/company/classsubject" },
         { label: "Departments", link: "/company/department" },
         { label: "Item Types", link: "/company/itemtype" },
+        { label: "Item Groups", link: "/company/itemgroup" },
         { label: "Items", link: "/company/item" },
         { label: "Geo Locations", link: "/company/geolocation" },
       ],
@@ -133,7 +134,7 @@ export default function Company() {
       children: [
         { label: "Menu", link: "/company/menu" },
         { label: "Role", link: "/company/role" },
-        { label: "Screen", link: "/company/screen" },
+        { label: "User Permission", link: "/company/userpermission" },
         { label: "Users", link: "/company/users" },
       ],
     },

@@ -4,6 +4,7 @@ export const itemSchema = yup.object({
   name: yup.string().required("Item Name is  required."),
   code: yup.string().required("Item Code is  required."),
   itemtype: yup.string().required("Itemtype is  required."),
+  itemgroup: yup.string().required("Itemgroup is  required."),
   sales_price: yup
     .number()
     .typeError("Sales Price must be a number")
