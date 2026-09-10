@@ -234,32 +234,30 @@ export default function Users() {
             setType("error");
           });
       } else {
+        const fd = new FormData();
         if (file) {
-          const fd = new FormData();
           fd.append("image", file, file.name);
-          Object.keys(values).forEach((key) => fd.append(key, values[key]));
-
-          axios
-            .post(`${baseUrl}/user/register`, fd)
-            .then((resp) => {
-              console.log("Response after submitting admin user", resp);
-              setMessage(resp.data.message);
-              setType("success");
-              handleClearFile();
-              cancelEdit();
-              setTab(1); // go to View List
-            })
-            .catch((e) => {
-              setMessage(e.response.data.message);
-              setType("error");
-              console.log("Error, response admin user calls", e);
-            });
-          Formik.resetForm();
-          setFile(null);
-        } else {
-          setMessage("Please provide image.");
-          setType("error");
         }
+
+        Object.keys(values).forEach((key) => fd.append(key, values[key]));
+
+        axios
+          .post(`${baseUrl}/user/register`, fd)
+          .then((resp) => {
+            console.log("Response after submitting admin user", resp);
+            setMessage(resp.data.message);
+            setType("success");
+            handleClearFile();
+            cancelEdit();
+            setTab(1); // go to View List
+          })
+          .catch((e) => {
+            setMessage(e.response.data.message);
+            setType("error");
+            console.log("Error, response admin user calls", e);
+          });
+        Formik.resetForm();
+        setFile(null);
       }
     },
   });
@@ -660,7 +658,6 @@ export default function Users() {
                           >
                             Delete
                           </Button>
-
                           <Button
                             variant="contained"
                             sx={{ background: "gold", color: "#222222" }}
@@ -668,14 +665,15 @@ export default function Users() {
                           >
                             Edit
                           </Button>
-
-                          <Button
-                            variant="contained"
-                            sx={{ background: "skyblue", color: "#000" }}
-                            onClick={() => viewUploadFile(value?.user_image)}
-                          >
-                            View Pic
-                          </Button>
+                          {value?.user_image && (
+                            <Button
+                              variant="contained"
+                              sx={{ background: "skyblue", color: "#000" }}
+                              onClick={() => viewUploadFile(value?.user_image)}
+                            >
+                              View Pic
+                            </Button>
+                          )}
                         </Box>
                       </TableCell>
                     </TableRow>

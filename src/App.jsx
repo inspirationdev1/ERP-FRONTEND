@@ -37,6 +37,7 @@ import Department from "./school/components/departments/Departments";
 import Feestype from "./school/components/feestypes/Feestypes";
 import Itemtype from "./company/components/itemtypes/Itemtypes";
 import Item from "./company/components/items/Items";
+import Itemgroups from "./company/components/itemsgroups/Itemgroup";
 import Feestructure from "./school/components/feestructures/Feestructures";
 // import Examtype from "./school/components/examtypes/Examtypes";
 import Salesinvoice from "./company/components/salesinvoices/Salesinvoices";
@@ -182,6 +183,7 @@ import SalesSummaryItemPrint from "./company/components/reports/SalesSummaryItem
 import PurchaseSummaryItemPrint from "./company/components/reports/PurchaseSummaryItemPrint";
 import SalesInvoiceListPrint from "./company/components/reports/SalesInvoiceListPrint";
 import PurchaseInvoiceListPrint from "./company/components/reports/PurchaseInvoiceListPrint";
+import Userpermission from "./company/components/userpermission/userPermission";
 
 function App() {
   const { authenticated, login, themeDark } = useContext(AuthContext);
@@ -206,6 +208,7 @@ function App() {
               <Route path="department" element={<Department />} />
               <Route path="itemtype" element={<Itemtype />} />
               <Route path="item" element={<Item />} />
+              <Route path="itemgroup" element={<Itemgroups />} />
               <Route path="salesinvoice" element={<Salesinvoice />} />
               <Route path="salesinvoiceprint" element={<SalesinvoicePrint />} />
               <Route path="receipt" element={<Receipts />} />
@@ -277,7 +280,7 @@ function App() {
 
               <Route path="menu" element={<Menu />} />
               <Route path="role" element={<Role />} />
-              <Route path="screen" element={<Screen />} />
+              <Route path="userpermission" element={<Userpermission />} />
 
               <Route path="numberseq" element={<Numberseqs />} />
               <Route path="appsetting" element={<Appsettings />} />

@@ -33,6 +33,10 @@ export default function Items() {
 
   const [itemtype, setItemtype] = useState([]);
   const [selectedItemtype, setSelectedItemtype] = useState(null);
+
+  const [itemgroups, setItemgroups] = useState([]);
+  const [selectedItemgroup, setSelectedItemgroup] = useState(null);
+
   const [selectedTaxrate, setSelectedTaxrate] = useState(null);
 
   const [accountledgers, setAccountledgers] = useState([]);
@@ -66,6 +70,7 @@ export default function Items() {
         Formik.setFieldValue("code", resp.data.data.code);
         Formik.setFieldValue("class", resp.data.data?.class?._id);
         Formik.setFieldValue("itemtype", resp?.data?.data?.itemtype?._id);
+        Formik.setFieldValue("itemgroup", resp?.data?.data?.itemgroup?._id);
         Formik.setFieldValue("taxrate", resp?.data?.data?.taxrate?._id);
         Formik.setFieldValue(
           "tax_percent",
@@ -76,7 +81,7 @@ export default function Items() {
         Formik.setFieldValue("purchase_price", resp.data.data.purchase_price);
         // const classId = resp.data.data?.class?._id;
         // const matchedClass = attendeeClass.find(c => c._id === classId);
-        setSelectedClass(resp.data.data?.class);
+        setSelectedItemgroup(resp.data.data?.itemgroup);
 
         setSelectedItemtype(resp.data.data?.itemtype);
         setSelectedTaxrate(resp.data.data?.taxrate);
@@ -99,10 +104,10 @@ export default function Items() {
     setEdit(false);
     setEditId(null);
     Formik.resetForm();
-    // 🔥 reset Autocomplete values
-    setSelectedClass(null);
-    setSelectedAccountledger(null);
+    //  reset Autocomplete values
+    
     setSelectedItemtype(null);
+    setSelectedItemgroup(null);
     setSelectedTaxrate(null);
   };
 
@@ -117,8 +122,8 @@ export default function Items() {
   const initialValues = {
     name: "",
     code: "",
-    class: "",
     itemtype: "",
+    itemgroup: "",
     taxrate: "",
     tax_percent: 0,
     taxtype: "",
@@ -205,10 +210,19 @@ export default function Items() {
       console.error("Error fetching Class:", error);
     }
   };
+  const fetchItemgroups = async () => {
+    try {
+      const itemgroupsData = await axios.get(`${baseUrl}/itemgroup/fetch-all`);
 
+      setItemgroups(itemgroupsData.data.data);
+    } catch (error) {
+      console.error("Error fetching item Group:", error);
+    }
+  };
   useEffect(() => {
     fetchClass();
     fetchItemtype();
+    fetchItemgroups();
 
     fetchstudentsitem();
   }, [message]);
@@ -368,6 +382,43 @@ export default function Items() {
                           }
                           helperText={
                             Formik.touched.itemtype && Formik.errors.itemtype
+                          }
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  {/* Itemgroup */}
+
+                  <Box>
+                    <Autocomplete
+                      // disabled={isEdit}
+                      options={itemgroups}
+                      getOptionLabel={(option) => option.itemgroup_name}
+                      value={selectedItemgroup}
+                      onChange={(event, newValue) => {
+                        setSelectedItemgroup(newValue);
+                        
+
+                        Formik.setFieldValue(
+                          "itemgroup",
+                          newValue ? newValue._id : "",
+                        );
+                        
+                      }}
+                      onBlur={() => Formik.setFieldTouched("itemgroup", true)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Select Itemgroup"
+                          placeholder="Search itemgroup..."
+                          fullWidth
+                          error={
+                            Formik.touched.itemgroup &&
+                            Boolean(Formik.errors.itemgroup)
+                          }
+                          helperText={
+                            Formik.touched.itemgroup && Formik.errors.itemgroup
                           }
                         />
                       )}
