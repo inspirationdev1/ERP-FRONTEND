@@ -53,13 +53,21 @@ export default function Users() {
       );
       console.log("generalmasters", generalmasters);
       let rolesData = generalmasters.data.data;
-      /* rolesData = rolesData.filter(
-        (generalmaster_type) => generalmaster_type === "role",
-      ); */
+
       rolesData = rolesData.filter(
         (row) => row.generalmaster_type.toString() === "role",
       );
       setRoles(rolesData);
+    } catch (error) {
+      console.error("Error fetching Roles:", error);
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const rolesData = await axios.get(`${baseUrl}/role/fetch-all`);
+
+      setRoles(rolesData.data.data);
     } catch (error) {
       console.error("Error fetching Roles:", error);
     }
@@ -120,28 +128,9 @@ export default function Users() {
         Formik.setFieldValue("email", resp.data.data.email);
         Formik.setFieldValue("name", resp.data.data.name);
         Formik.setFieldValue("user_code", resp.data.data?.user_code);
-        Formik.setFieldValue("qualification", resp.data.data.qualification);
-        Formik.setFieldValue("gender", resp.data.data.gender);
-        // Formik.setFieldValue("age", resp.data.data.age);
         Formik.setFieldValue("password", resp.data.data.password);
-
-        Formik.setFieldValue("year", resp.data.data.year);
-        const matchedYear = years.find((s) => s.value === resp.data.data.year);
-        setSelectedYear(matchedYear || null);
-
-        Formik.setFieldValue(
-          "dOBDate",
-          resp.data.data.dOBDate?.split("T")[0] || "",
-        );
-        Formik.setFieldValue(
-          "joinDate",
-          resp.data.data.joinDate?.split("T")[0] || "",
-        );
-
-        // Auto calculate age
-        const age = calculateAge(resp.data.data.dOBDate?.split("T")[0] || "");
-        Formik.setFieldValue("age", age);
-
+        Formik.setFieldValue("role", resp.data.data.role?._id);
+        setSelectedRole(resp.data.data.role);
         setEditId(resp.data.data._id);
         setTab(0); // open Create Receipt tab
       })
@@ -173,7 +162,7 @@ export default function Users() {
 
   const cancelEdit = () => {
     setEdit(false);
-    setSelectedYear(null);
+    setSelectedRole(null);
     Formik.resetForm();
   };
 
@@ -199,13 +188,8 @@ export default function Users() {
     email: "",
     name: "",
     user_code: "",
-    // qualification: "",
-    // gender: "",
-    // age: "",
+    role: "",
     password: "",
-    // year: "",
-    // dOBDate: "",
-    // joinDate: "",
   };
 
   const Formik = useFormik({
@@ -290,7 +274,7 @@ export default function Users() {
   };
   useEffect(() => {
     fetchusers();
-    fetchGeneralMasters();
+    fetchRoles();
     // fetchuserClass();
   }, [message, params]);
   return (
@@ -400,7 +384,7 @@ export default function Users() {
                     <Autocomplete
                       // disabled={isEdit}
                       options={roles}
-                      getOptionLabel={(option) => option.generalmaster_name}
+                      getOptionLabel={(option) => option.role_name}
                       value={selectedRole}
                       onChange={(event, newValue) => {
                         setSelectedRole(newValue);
@@ -622,8 +606,7 @@ export default function Users() {
                       Name
                     </TableCell>
                     <TableCell align="right">Email</TableCell>
-                    <TableCell align="right">dOBDate</TableCell>
-                    <TableCell align="right">JoinDate</TableCell>
+                    <TableCell align="right">Role</TableCell>
                     <TableCell align="right">Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -638,10 +621,7 @@ export default function Users() {
                       </TableCell>
                       <TableCell align="right">{value?.email}</TableCell>
                       <TableCell align="right">
-                        {dayjs(value?.dOBDate).format("DD/MM/YYYY")}
-                      </TableCell>
-                      <TableCell align="right">
-                        {dayjs(value?.joinDate).format("DD/MM/YYYY")}
+                        {value?.role?.role_name}
                       </TableCell>
                       <TableCell align="right">
                         <Box
