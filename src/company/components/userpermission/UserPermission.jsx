@@ -9,11 +9,14 @@ import {
   TableCell,
   TableRow,
   TableHead,
+  Alert,
   Table,
   TableContainer,
   Tabs,
   Tab,
   Autocomplete,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
@@ -24,10 +27,18 @@ import CustomizedSnackbars from "../../../basic utility components/CustomizedSna
 import { userpermissionSchema } from "../../../yupSchema/userpermissionSchema";
 
 export default function Userpermission() {
+  const [isDataValid, setIsDataValid] = useState(true);
+  const [dataError, setDataError] = useState("");
+  const [expensetypes, setExpensetypes] = useState([]);
+
+  const [expenseAmountTotal, setExpenseAmountTotal] = useState(0);
+
   const [params, setParams] = useState({});
-  const [userpermissions, setUserpermissions] = useState([]);
   const [isEdit, setEdit] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [isAdd, setAdd] = useState(false);
+  const [screenNames, setScreenNames] = useState(false);
+
   const [tab, setTab] = useState(0);
   const [taxtypes, setTaxtypes] = useState([]);
   const [selectedTaxtype, setSelectedTaxtype] = useState(null);
@@ -37,6 +48,19 @@ export default function Userpermission() {
 
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [userpermissions, setUserpermissions] = useState([]);
+  const [userpermissionsDetails, setUserpermissionsDetails] = useState([
+    {
+      screenId: null,
+      screenName: null,
+      addflag: false,
+      isEdit: false,
+      viewflag: false,
+      editflag: false,
+      deleteflag: false,
+      printflag: false,
+    },
+  ]);
 
   const fetchRoles = async () => {
     try {
@@ -73,33 +97,58 @@ export default function Userpermission() {
         });
     }
   };
-  const handleEdit = (id) => {
-    console.log("Handle  Edit is called", id);
-    setEdit(true);
+  const handleEdit = (value) => {
+    console.log("Handle  Edit is called", value.id);
+    console.log("user", value?.user);
+    console.log("role", value?.user?.role);
+    setSelectedUser(value?.user);
+    setSelectedRole(value?.user?.role);
+    const id = value.id;
+    setEditId(id);
     axios
       .get(`${baseUrl}/userpermission/fetch-single/${id}`)
       .then((resp) => {
-        Formik.setFieldValue("user", resp.data.data?.user?._id);
-         Formik.setFieldValue("user_name", resp.data.data?.user_name);
+        // Formik.setFieldValue("expenseCode", resp.data.data.expenseCode);
 
-         setSelectedUser(resp.data.data?.user)
-        Formik.setFieldValue("role", resp.data.data?.role?._id);
-        Formik.setFieldValue("role_name", resp.data.data?.role_name);
-         setSelectedRole( resp.data.data?.role)
+        const editUserpermissionDetails = resp.data.data.map((row) => ({
+          ...row,
+          isEdit: true,
+        }));
 
-        setEditId(resp.data.data._id);
-        setTab(0); // open Create Userpermission tab
+        setUserpermissionsDetails(editUserpermissionDetails);
+        setEdit(true);
+        setTab(0); // open Edit Userpermission tab
       })
       .catch((e) => {
         console.log("Error  in fetching edit data.");
       });
   };
 
+  const handleAdd = (value) => {
+    console.log("Handle  Add is called", value.id);
+    console.log("user", value?.user);
+    console.log("role", value?.user?.role);
+    setSelectedUser(value?.user);
+    setSelectedRole(value?.user?.role);
+    Formik.setFieldValue("user", value?.user?.id);
+
+    Formik.setFieldValue("user_name", value?.user?.name);
+
+    Formik.setFieldValue("role", value?.user?.role?._id);
+    Formik.setFieldValue("role_name", value?.user?.role?.role_name);
+    clearUserPermissionsDetails();
+    setAdd(true);
+
+    setTab(0); // open Create Userpermission tab
+  };
+
   const cancelEdit = () => {
     setEdit(false);
     setSelectedUser(null);
-    setSelectedRole(null)
+    setSelectedRole(null);
+    clearUserPermissionsDetails();
     Formik.resetForm();
+    setTab(1);
   };
 
   //   MESSAGE
@@ -114,20 +163,60 @@ export default function Userpermission() {
     user: "",
     user_name: "",
     role: "",
-    role_name:"",
+    role_name: "",
   };
+
   const Formik = useFormik({
     initialValues: initialValues,
-    validationSchema: userpermissionSchema,
+    // validationSchema: userpermissionSchema,
     onSubmit: (values) => {
       values.user = selectedUser?._id;
       values.role = selectedRole?._id;
+
+      // if (!selectedUser) {
+      //   setMessage("Select the User");
+      // }
+      // setType("error");
+
+      if (!selectedUser) {
+        setDataError("Select the user");
+        setIsDataValid(false);
+        return;
+      }
+      if (!selectedRole) {
+        setDataError("Select the Role");
+        setIsDataValid(false);
+        return;
+      }
+
+      const hasDuplicate =
+        new Set(userpermissionsDetails.map((d) => d?.screenId.toString()))
+          .size !== userpermissionsDetails.length;
+      console.log(hasDuplicate); // true
+      if (hasDuplicate) {
+        setIsDataValid(false);
+        setDataError("Screen Name selection is duplicated");
+        return;
+      }
+      const payload = {
+        ...values,
+        userpermissionsDetails: userpermissionsDetails.map((row) => ({
+          user: selectedUser?._id,
+          role: selectedRole?._id,
+          screenId: row?.screenId,
+          screenName: row.screenName,
+          viewflag: row?.viewflag,
+          addflag: row?.addflag,
+          editflag: row?.editflag,
+          deleteflag: row?.deleteflag,
+          printflag: row?.printflag,
+        })),
+      };
+      console.log("payload", payload);
       if (isEdit) {
         console.log("edit id", editId);
         axios
-          .patch(`${baseUrl}/userpermission/update/${editId}`, {
-            ...values,
-          })
+          .patch(`${baseUrl}/userpermission/update/${editId}`, payload)
           .then((resp) => {
             console.log("Edit submit", resp);
             setMessage(resp.data.message);
@@ -143,7 +232,7 @@ export default function Userpermission() {
           });
       } else {
         axios
-          .post(`${baseUrl}/userpermission/create`, { ...values })
+          .post(`${baseUrl}/userpermission/create`, payload)
           .then((resp) => {
             console.log("Response after submitting admin casting", resp);
             setMessage(resp.data.message);
@@ -176,7 +265,89 @@ export default function Userpermission() {
       .catch(() => console.log("Error in fetching userpermissions data"));
   };
 
+  const handleChange = (index, field, value) => {
+    const updated = [...userpermissionsDetails];
+    updated[index][field] = value;
+
+    if (field === "screenId") {
+      updated[index].viewflag = false;
+      updated[index].addflag = false;
+      updated[index].editflag = false;
+      updated[index].deleteflag = false;
+      updated[index].printflag = false;
+      // updated[index].screenId = value?.screenId;
+      updated[index].screenName = value?.screenName;
+    }
+
+    setUserpermissionsDetails(updated);
+  };
+
+  const calculateTotals = () => {
+    let expAmountTotal = 0;
+
+    for (const item of userpermissionsDetails) {
+      expAmountTotal += item?.expenseAmount || 0;
+    }
+    return expAmountTotal;
+  };
+
+  const addRow = () => {
+    setUserpermissionsDetails([
+      ...userpermissionsDetails,
+      {
+        screenId: null,
+        screenName: null,
+        addflag: false,
+        viewflag: false,
+        editflag: false,
+        deleteflag: false,
+        printflag: false,
+        isEdit: false,
+      },
+    ]);
+  };
+
+  const removeRow = (index) => {
+    setUserpermissionsDetails(
+      userpermissionsDetails.filter((_, i) => i !== index),
+    );
+    console.log(userpermissionsDetails);
+  };
+
+  const clearUserPermissionsDetails = () => {
+    let itemArray = [];
+    for (let item of screenNames) {
+      const itemData = {
+        screenId: item.screenId,
+        screenName: item.screenName,
+        viewflag: false,
+        addflag: false,
+        editflag: false,
+        deleteflag: false,
+        printflag: false,
+        isEdit: false,
+      };
+      itemArray = [...itemArray, itemData];
+    }
+
+    console.log(itemArray);
+    setUserpermissionsDetails(itemArray);
+  };
+  const fetchScreenNames = async () => {
+    try {
+      const screensData = [
+        { screenId: "customer", screenName: "Customer" },
+        { screenId: "supplier", screenName: "Supplier" },
+        { screenId: "employee", screenName: "Employee" },
+      ];
+      setScreenNames(screensData);
+    } catch (error) {
+      console.error("Error fetching Screen Names:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchScreenNames();
     fetchUsers();
     fetchRoles();
     fetchUserpermissions();
@@ -192,6 +363,11 @@ export default function Userpermission() {
     }
 
     setParams(newParam);
+  };
+
+  const handleSearchScreenname = (e) => {
+    // setUserpermissionsDetails
+    userpermissionsDetails = userpermissionsDetails.filter;
   };
   return (
     <>
@@ -232,12 +408,9 @@ export default function Userpermission() {
                   gap: 2, //  equal spacing between all items
                 }}
               >
-               
-
-                
                 <Box>
                   <Autocomplete
-                    disabled={isEdit}
+                    disabled
                     options={users}
                     getOptionLabel={(option) => option.name}
                     value={selectedUser}
@@ -271,7 +444,7 @@ export default function Userpermission() {
 
                 <Box>
                   <Autocomplete
-                    disabled={isEdit}
+                    disabled
                     options={roles}
                     getOptionLabel={(option) => option.role_name}
                     value={selectedRole}
@@ -304,6 +477,161 @@ export default function Userpermission() {
                   />
                 </Box>
 
+                {/* ExpenseDetail */}
+                <Box sx={{ mt: 3 }}>
+                  {!isDataValid && (
+                    <Alert severity="error" sx={{ mt: 2 }}>
+                      {dataError}
+                    </Alert>
+                  )}
+
+                  <Box
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "3fr 1fr 1fr 1fr 0.5fr",
+                      gap: 1,
+                      fontWeight: "bold",
+                      mb: 1,
+                    }}
+                  ></Box>
+
+                  {/* Rows */}
+                  {userpermissionsDetails.map((row, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns: "3fr 1fr 1fr 1fr 0.5fr",
+                        gap: 1,
+                        mb: 1,
+                      }}
+                    >
+                      {/* ScreenId */}
+
+                      <Autocomplete
+                        disabled={row.isEdit}
+                        options={Array.isArray(screenNames) ? screenNames : []}
+                        getOptionLabel={(option) => option?.screenName || ""}
+                        value={
+                          (screenNames &&
+                            screenNames.find(
+                              (screen) => screen.screenId === row.screenId,
+                            )) ||
+                          null
+                        }
+                        isOptionEqualToValue={(option, value) =>
+                          option?.screenId === value?.screenId
+                        }
+                        onChange={(event, newValue) => {
+                          // handleChange(
+                          //   index,
+                          //   "screenId",
+                          //   newValue?.screenId || "",
+                          // );
+                          handleChange(
+                            index,
+                            "screenId",
+                            newValue?.screenId || "",
+                          );
+                          handleChange(
+                            index,
+                            "screenName",
+                            newValue?.screenName || "",
+                          );
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Screenname"
+                            placeholder="Search screenname..."
+                            fullWidth
+                          />
+                        )}
+                      />
+
+                      {/* Checkbox */}
+
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={row.viewflag || false}
+                            onChange={(e) => {
+                              handleChange(index, "viewflag", e.target.checked);
+                            }}
+                          />
+                        }
+                        label="View"
+                      />
+
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={row.addflag || false}
+                            onChange={(e) => {
+                              handleChange(index, "addflag", e.target.checked);
+                            }}
+                          />
+                        }
+                        label="Add"
+                      />
+
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={row.editflag || false}
+                            onChange={(e) => {
+                              handleChange(index, "editflag", e.target.checked);
+                            }}
+                          />
+                        }
+                        label="Edit"
+                      />
+
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={row.deleteflag || false}
+                            onChange={(e) => {
+                              handleChange(
+                                index,
+                                "deleteflag",
+                                e.target.checked,
+                              );
+                            }}
+                          />
+                        }
+                        label="Delete"
+                      />
+
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={row.printflag || false}
+                            onChange={(e) => {
+                              handleChange(
+                                index,
+                                "printflag",
+                                e.target.checked,
+                              );
+                            }}
+                          />
+                        }
+                        label="Print"
+                      />
+                      <Box>
+                        <Button color="error" onClick={() => removeRow(index)}>
+                          ✕
+                        </Button>
+                      </Box>
+                    </Box>
+                  ))}
+
+                  {/* Add Row */}
+                  <Button variant="outlined" onClick={addRow}>
+                    + Add Screen
+                  </Button>
+                </Box>
+
                 <Box>
                   <Button type="submit" sx={{ mr: 1 }} variant="contained">
                     Submit
@@ -333,7 +661,7 @@ export default function Userpermission() {
             >
               {/* Search */}
               <TextField
-                label="Search Userpermission .."
+                label="Search User "
                 size="small"
                 onChange={handleSearch}
                 fullWidth
@@ -363,7 +691,7 @@ export default function Userpermission() {
                   boxShadow: 2,
                 }}
               >
-                Userpermissions Count : {noofuserpermissions}
+                Users Count : {noofuserpermissions}
               </Box>
             </Box>
 
@@ -373,49 +701,81 @@ export default function Userpermission() {
                   <TableRow>
                     <TableCell align="right">User name</TableCell>
                     <TableCell align="right">Role Name</TableCell>
+                    <TableCell align="right">permissionCount</TableCell>
                     <TableCell align="right">Action</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {userpermissions.map((value, i) => (
-                    <TableRow
-                      key={i}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell align="right">
-                        {value?.user_name}
-                      </TableCell>
-                      <TableCell align="right">
-                        {value?.role_name}
-                      </TableCell>
+                  {userpermissions &&
+                    userpermissions.map((value, i) => (
+                      <TableRow
+                        key={i}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell align="right">{value?.name}</TableCell>
+                        <TableCell align="right">
+                          {value?.role?.role_name}
+                        </TableCell>
+                        <TableCell align="right">
+                          {value?.permissionCount}
+                        </TableCell>
 
-                      <TableCell align="right">
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            gap: 1.5, // 👈 space between buttons
-                          }}
-                        >
-                          <Button
-                            variant="contained"
-                            sx={{ background: "red", color: "#fff" }}
-                            onClick={() => handleDelete(value._id)}
+                        <TableCell align="right">
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              gap: 1.5, // 👈 space between buttons
+                            }}
                           >
-                            Delete
-                          </Button>
+                            {value?.permissionCount === 0 && (
+                              <Button
+                                variant="contained"
+                                sx={{
+                                  backgroundColor: "#2e7d32",
+                                  color: "#fff",
+                                }}
+                                onClick={() =>
+                                  handleAdd({
+                                    id: value._id,
+                                    user: value,
+                                    role: value.roles,
+                                  })
+                                }
+                              >
+                                Add
+                              </Button>
+                            )}
 
-                          <Button
-                            variant="contained"
-                            sx={{ background: "gold", color: "#222222" }}
-                            onClick={() => handleEdit(value._id)}
-                          >
-                            Edit
-                          </Button>
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                            {value?.permissionCount > 0 && (
+                              <Button
+                                variant="contained"
+                                sx={{ background: "gold", color: "#222222" }}
+                                onClick={() =>
+                                  handleEdit({
+                                    id: value._id,
+                                    user: value,
+                                    role: value.roles,
+                                  })
+                                }
+                              >
+                                Edit
+                              </Button>
+                            )}
+
+                            <Button
+                              variant="contained"
+                              sx={{ background: "red", color: "#fff" }}
+                              onClick={() => handleDelete(value._id)}
+                            >
+                              Delete
+                            </Button>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
