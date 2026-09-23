@@ -183,7 +183,8 @@ import SalesSummaryItemPrint from "./company/components/reports/SalesSummaryItem
 import PurchaseSummaryItemPrint from "./company/components/reports/PurchaseSummaryItemPrint";
 import SalesInvoiceListPrint from "./company/components/reports/SalesInvoiceListPrint";
 import PurchaseInvoiceListPrint from "./company/components/reports/PurchaseInvoiceListPrint";
-import Userpermission from "./company/components/userpermission/Userpermission";
+// import Userpermission from "./company/components/userpermission/Userpermission";
+import Userpermission from "./company/components/userpermission/Userpermission"
 
 function App() {
   const { authenticated, login, themeDark } = useContext(AuthContext);
