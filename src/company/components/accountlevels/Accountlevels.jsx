@@ -67,6 +67,7 @@ export default function Accountlevels() {
         Formik.setFieldValue("level", resp.data.data?.level || 0);
         Formik.setFieldValue("seq", resp.data.data?.seq || 0);
         Formik.setFieldValue("groupId", resp.data.data?.groupId);
+        Formik.setFieldValue("account_type", resp.data.data?.account_type || 0);
         setSelectedAccountlevel(resp.data.data?.groupId);
         setEditId(resp.data.data._id);
         setTab(0); // open Create Class tab
@@ -93,6 +94,9 @@ export default function Accountlevels() {
   const initialValues = {
     accountlevel_name: "",
     accountlevel_code: "",
+    seq: 0,
+    level: 0,
+    account_type: "",
     groupId: "",
   };
   const Formik = useFormik({
@@ -255,7 +259,7 @@ export default function Accountlevels() {
                 {/* Accountlevels Dropdown */}
                 <Box>
                   <Autocomplete
-                    disabled={isEdit}
+                    // disabled={isEdit}
                     options={accountlevels}
                     getOptionLabel={(option) => option?.accountlevel_name || ""}
                     value={selectedAccountlevel}
@@ -264,6 +268,10 @@ export default function Accountlevels() {
                       Formik.setFieldValue(
                         "groupId",
                         newValue ? newValue._id : "",
+                      );
+                      Formik.setFieldValue(
+                        "account_type",
+                        newValue ? newValue.account_type : "",
                       );
                     }}
                     renderInput={(params) => (
@@ -335,6 +343,7 @@ export default function Accountlevels() {
                     <TableCell align="right">Code</TableCell>
                     <TableCell align="right">Account Group</TableCell>
                     <TableCell align="right">Account Level</TableCell>
+                    <TableCell align="right">Account Type</TableCell>
                     <TableCell align="right">Action</TableCell>
                   </TableRow>
                 </TableHead>
@@ -354,6 +363,7 @@ export default function Accountlevels() {
                         {value.groupId?.accountlevel_name}
                       </TableCell>
                       <TableCell align="right">{value?.level}</TableCell>
+                      <TableCell align="left">{value?.account_type}</TableCell>
                       <TableCell align="right">
                         <Box
                           sx={{
