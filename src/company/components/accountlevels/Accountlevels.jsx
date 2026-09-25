@@ -154,7 +154,7 @@ export default function Accountlevels() {
       newParam = { ...params };
       delete newParam["search"];
     }
-
+//newparam
     setParams(newParam);
   };
   const fetchstudentsaccountlevel = () => {
