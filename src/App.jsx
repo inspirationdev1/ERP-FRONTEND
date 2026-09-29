@@ -184,6 +184,7 @@ import PurchaseSummaryItemPrint from "./company/components/reports/PurchaseSumma
 import SalesInvoiceListPrint from "./company/components/reports/SalesInvoiceListPrint";
 import PurchaseInvoiceListPrint from "./company/components/reports/PurchaseInvoiceListPrint";
 import Userpermission from "./company/components/userpermission/Userpermission";
+import Rolepermission from "./company/components/rolepermission/Rolepermission";
 
 // import Userpermission from "./company/components/userpermission/Userpermission"
 
@@ -283,6 +284,7 @@ function App() {
               <Route path="menu" element={<Menu />} />
               <Route path="role" element={<Role />} />
               <Route path="userpermission" element={<Userpermission />} />
+              <Route path="rolepermission" element={<Rolepermission />} />
 
               <Route path="numberseq" element={<Numberseqs />} />
               <Route path="appsetting" element={<Appsettings />} />

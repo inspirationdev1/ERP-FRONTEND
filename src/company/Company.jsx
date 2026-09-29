@@ -134,7 +134,9 @@ export default function Company() {
       children: [
         { label: "Menu", link: "/company/menu" },
         { label: "Role", link: "/company/role" },
-        { label: "User Permission", link: "/company/userpermission" },
+        // user role
+        { label: "Role Permission", link: "/company/rolepermission" },
+        // { label: "User Permission", link: "/company/userpermission" },
         { label: "Users", link: "/company/users" },
       ],
     },
