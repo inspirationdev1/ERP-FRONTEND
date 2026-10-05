@@ -40,8 +40,23 @@ import Item from "./company/components/items/Items";
 import Itemgroups from "./company/components/itemsgroups/Itemgroup";
 import Feestructure from "./school/components/feestructures/Feestructures";
 // import Examtype from "./school/components/examtypes/Examtypes";
+
 import Salesinvoice from "./company/components/salesinvoices/Salesinvoices";
 import SalesinvoicePrint from "./company/components/salesinvoices/SalesinvoicePrint";
+
+import Salesquotation from "./company/components/salesquotation/Salesquotation";
+import SalesquotationPrint from "./company/components/salesquotation/SalesquotationPrint";
+
+import Salesorder from "./company/components/salesorder/Salesorder";
+import SalesorderPrint from "./company/components/salesorder/SalesorderPrint";
+
+
+import Deliveryorder from "./company/components/deliveryorder/Deliveryorder";
+import DeliveryorderPrint from "./company/components/deliveryorder/DeliveryorderPrint";
+
+
+
+
 import Receipts from "./company/components/receipts/Receipts";
 import ReceiptPrint from "./company/components/receipts/ReceiptPrint";
 import ReceiptPrint_MMS from "./company/components/receipts/ReceiptPrint_MMS";
@@ -182,6 +197,10 @@ import PurchaseSummarySupplierPrint from "./company/components/reports/PurchaseS
 import SalesSummaryItemPrint from "./company/components/reports/SalesSummaryItemPrint";
 import PurchaseSummaryItemPrint from "./company/components/reports/PurchaseSummaryItemPrint";
 import SalesInvoiceListPrint from "./company/components/reports/SalesInvoiceListPrint";
+import SalesQuotationListPrint from "./company/components/reports/SalesQuotationListPrint";
+import SalesOrderListPrint from "./company/components/reports/SalesOrderListPrint";
+import DeliveryOrderListPrint from "./company/components/reports/DeliveryOrderListPrint";
+
 import PurchaseInvoiceListPrint from "./company/components/reports/PurchaseInvoiceListPrint";
 import Userpermission from "./company/components/userpermission/Userpermission";
 import Rolepermission from "./company/components/rolepermission/Rolepermission";
@@ -212,8 +231,21 @@ function App() {
               <Route path="itemtype" element={<Itemtype />} />
               <Route path="item" element={<Item />} />
               <Route path="itemgroup" element={<Itemgroups />} />
+
               <Route path="salesinvoice" element={<Salesinvoice />} />
               <Route path="salesinvoiceprint" element={<SalesinvoicePrint />} />
+
+              <Route path="salesquotation" element={<Salesquotation />} />
+              <Route path="salesorder" element={<Salesorder />} />
+              <Route path="deliveryorder" element={<Deliveryorder />} />
+              <Route
+                path="salesquotationprint"
+                element={<SalesquotationPrint />}
+              />
+
+              <Route path="salesorderprint" element={<SalesorderPrint />} />
+              <Route path="deliveryorderprint" element={<DeliveryorderPrint />} />
+
               <Route path="receipt" element={<Receipts />} />
               <Route path="receiptprint" element={<ReceiptPrint />} />
               <Route path="receiptprint_mms" element={<ReceiptPrint_MMS />} />
@@ -259,10 +291,27 @@ function App() {
                 path="salessummaryitemprint"
                 element={<SalesSummaryItemPrint />}
               />
+
+              <Route
+                path="salesquotationlistprint"
+                element={<SalesQuotationListPrint />}
+              />
+
+              <Route
+                path="salesorderlistprint"
+                element={<SalesOrderListPrint />}
+              />
+
+              <Route
+                path="deliveryorderlistprint"
+                element={<DeliveryOrderListPrint />}
+              />
+
               <Route
                 path="salesinvoicelistprint"
                 element={<SalesInvoiceListPrint />}
               />
+
               <Route
                 path="purchasesummarysupplierprint"
                 element={<PurchaseSummarySupplierPrint />}
