@@ -88,6 +88,9 @@ export default function Company() {
       icon: GroupIcon,
       children: [
         { label: "Customers", link: "/company/customers" },
+        { label: "Sales Quotation", link: "/company/salesquotation" },
+        { label: "Sales Order", link: "/company/salesorder" },
+        { label: "Delivery Order", link: "/company/deliveryorder" },
         { label: "Sales Invoice", link: "/company/salesinvoice" },
         { label: "Receipts", link: "/company/receipt" },
         { label: "Reports", link: "/company/salesreports" },
