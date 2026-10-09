@@ -19,6 +19,7 @@ import {
   Autocomplete,
   Tabs,
   Tab,
+  Checkbox,
 } from "@mui/material";
 // import { Container, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Select, MenuItem, Alert, FormControl, InputLabel, Autocomplete, TextField, Box } from '@mui/material';
 import dayjs from "dayjs";
@@ -46,6 +47,9 @@ export default function Deliveryorder() {
 
   const [appsettings, setAppsettings] = useState([]);
   const [selectedAppsetting, setSelectedAppsetting] = useState(null);
+
+  const [salesorders, setSalesorders] = useState([]);
+  const [selectedSalesorders, setSelectedSalesorders] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [attendeeClass, setAttendeeClass] = useState([]);
@@ -235,6 +239,7 @@ export default function Deliveryorder() {
     // 🔥 reset Autocomplete values
     setSelectedGeolocation(null);
     setSelectedCustomer(null);
+    //setSelectedSalesorders([]);
     clearOrderDetails();
   };
 
@@ -452,6 +457,21 @@ export default function Deliveryorder() {
     }
   };
 
+  const fetchSalesorders = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/salesorder/fetch-with-query`,
+        {
+          params: { customer: selectedCustomer?._id },
+        },
+      );
+
+      setSalesorders(response.data.data);
+    } catch (error) {
+      console.log("Error fetching sales orders", error);
+    }
+  };
+
   const fetchItems = async () => {
     try {
       const itemResponse = await axios.get(`${baseUrl}/item/fetch-with-query`, {
@@ -483,6 +503,10 @@ export default function Deliveryorder() {
   useEffect(() => {
     fetchCustomers();
   }, [selectedGeolocation]);
+
+  useEffect(() => {
+    fetchSalesorders();
+  }, [selectedCustomer]);
 
   useEffect(() => {
     console.log("orderDetails:", orderDetails);
@@ -693,12 +717,11 @@ export default function Deliveryorder() {
                         onBlur={Formik.handleBlur}
                         disabled={isEdit}
                       />
-                      {Formik.touched.orderDate &&
-                        Formik.errors.orderDate && (
-                          <Typography color="error" variant="caption">
-                            {Formik.errors.orderDate}
-                          </Typography>
-                        )}
+                      {Formik.touched.orderDate && Formik.errors.orderDate && (
+                        <Typography color="error" variant="caption">
+                          {Formik.errors.orderDate}
+                        </Typography>
+                      )}
                     </Box>
 
                     {/* geolocation */}
@@ -802,6 +825,45 @@ export default function Deliveryorder() {
                       )}
                     </Box>
 
+                    <Box>
+                      <FormControl fullWidth>
+                        <InputLabel id="salesorder-label">
+                          Select Sales Order
+                        </InputLabel>
+
+                        <Select
+                          labelId="salesorder-label"
+                          multiple
+                          value={selectedSalesorders}
+                          onChange={(e) => {
+                            setSelectedSalesorders(e.target.value);
+                          }}
+                          renderValue={(selected) =>
+                            selected
+                              .map(
+                                (id) =>
+                                  salesorders.find((order) => order._id === id)
+                                    ?.siCode,
+                              )
+                              .join(", ")
+                          }
+                          label="Select Sales Order"
+                        >
+                          {salesorders.map((order) => (
+                            <MenuItem key={order._id} value={order._id}>
+                              <Checkbox
+                                checked={selectedSalesorders.includes(
+                                  order._id,
+                                )}
+                              />
+
+                              {order.siCode}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Box>
+
                     {/* Remarks → full width */}
                     <Box sx={{ gridColumn: "1 / -1" }}>
                       <TextField
@@ -901,7 +963,11 @@ export default function Deliveryorder() {
                             type="number"
                             value={row.delivery_price}
                             onChange={(e) =>
-                              handleChange(index, "delivery_price", e.target.value)
+                              handleChange(
+                                index,
+                                "delivery_price",
+                                e.target.value,
+                              )
                             }
                           />
                         </Box>

@@ -19,6 +19,7 @@ import {
   Autocomplete,
   Tabs,
   Tab,
+  Checkbox,
 } from "@mui/material";
 // import { Container, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Select, MenuItem, Alert, FormControl, InputLabel, Autocomplete, TextField, Box } from '@mui/material';
 import dayjs from "dayjs";
@@ -43,6 +44,9 @@ export default function Salesorder() {
 
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  const [salesquotations, setSalesquotations] = useState([]);
+  const [selectedSalesquotations, setSelectedSalesquotations] = useState([]);
 
   const [appsettings, setAppsettings] = useState([]);
   const [selectedAppsetting, setSelectedAppsetting] = useState(null);
@@ -235,6 +239,7 @@ export default function Salesorder() {
     // 🔥 reset Autocomplete values
     setSelectedGeolocation(null);
     setSelectedCustomer(null);
+    //setSelectedSalesorders([]);
     clearOrderDetails();
   };
 
@@ -452,6 +457,21 @@ export default function Salesorder() {
     }
   };
 
+  const fetchSalesquotations = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/salesquotation/fetch-with-query`,
+        {
+          params: { customer: selectedCustomer?._id },
+        },
+      );
+
+      setSalesquotations(response.data.data);
+    } catch (error) {
+      console.log("Error fetching sales quotations", error);
+    }
+  };
+
   const fetchItems = async () => {
     try {
       const itemResponse = await axios.get(`${baseUrl}/item/fetch-with-query`, {
@@ -483,6 +503,10 @@ export default function Salesorder() {
   useEffect(() => {
     fetchCustomers();
   }, [selectedGeolocation]);
+
+  useEffect(() => {
+    fetchSalesquotations();
+  }, [selectedCustomer]);
 
   useEffect(() => {
     console.log("orderDetails:", orderDetails);
@@ -617,9 +641,7 @@ export default function Salesorder() {
             indicatorColor="primary"
           >
             {/* <Tab label="Create Receipt" /> */}
-            <Tab
-              label={isEdit ? "Edit Sales Order" : "Create Sales Order"}
-            />
+            <Tab label={isEdit ? "Edit Sales Order" : "Create Sales Order"} />
             <Tab label="View List" />
           </Tabs>
         </Box>
@@ -693,12 +715,11 @@ export default function Salesorder() {
                         onBlur={Formik.handleBlur}
                         disabled={isEdit}
                       />
-                      {Formik.touched.orderDate &&
-                        Formik.errors.orderDate && (
-                          <Typography color="error" variant="caption">
-                            {Formik.errors.orderDate}
-                          </Typography>
-                        )}
+                      {Formik.touched.orderDate && Formik.errors.orderDate && (
+                        <Typography color="error" variant="caption">
+                          {Formik.errors.orderDate}
+                        </Typography>
+                      )}
                     </Box>
 
                     {/* geolocation */}
@@ -800,6 +821,46 @@ export default function Salesorder() {
                           {Formik.errors.status}
                         </p>
                       )}
+                    </Box>
+
+                    <Box>
+                      <FormControl fullWidth>
+                        <InputLabel id="salesquotation-label">
+                          Select Sales Quotation
+                        </InputLabel>
+
+                        <Select
+                          labelId="salesquotation-label"
+                          multiple
+                          value={selectedSalesquotations}
+                          onChange={(e) => {
+                            setSelectedSalesquotations(e.target.value);
+                          }}
+                          renderValue={(selected) =>
+                            selected
+                              .map(
+                                (id) =>
+                                  salesquotations.find(
+                                    (quotation) => quotation._id === id,
+                                  )?.siCode,
+                              )
+                              .join(", ")
+                          }
+                          label="Select Sales Quotation"
+                        >
+                          {salesquotations.map((quotation) => (
+                            <MenuItem key={quotation._id} value={quotation._id}>
+                              <Checkbox
+                                checked={selectedSalesquotations.includes(
+                                  quotation._id,
+                                )}
+                              />
+
+                              {quotation.siCode}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Box>
 
                     {/* Remarks → full width */}

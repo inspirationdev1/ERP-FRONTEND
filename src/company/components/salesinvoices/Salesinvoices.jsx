@@ -19,6 +19,7 @@ import {
   Autocomplete,
   Tabs,
   Tab,
+  Checkbox,
 } from "@mui/material";
 // import { Container, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Select, MenuItem, Alert, FormControl, InputLabel, Autocomplete, TextField, Box } from '@mui/material';
 import dayjs from "dayjs";
@@ -43,6 +44,9 @@ export default function Salesinvoice() {
 
   const [customers, setCustomers] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+  const [deliveryorders, setDeliveryorders] = useState([]);
+  const [selectedDeliveryorders, setSelectedDeliveryorders] = useState([]);
 
   const [appsettings, setAppsettings] = useState([]);
   const [selectedAppsetting, setSelectedAppsetting] = useState(null);
@@ -452,6 +456,21 @@ export default function Salesinvoice() {
     }
   };
 
+  const fetchDeliveryorders = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/deliveryorder/fetch-with-query`,
+        {
+          params: { customer: selectedCustomer?._id },
+        },
+      );
+
+      setDeliveryorders(response.data.data);
+    } catch (error) {
+      console.log("Error fetching delivery orders", error);
+    }
+  };
+
   const fetchItems = async () => {
     try {
       const itemResponse = await axios.get(`${baseUrl}/item/fetch-with-query`, {
@@ -483,6 +502,10 @@ export default function Salesinvoice() {
   useEffect(() => {
     fetchCustomers();
   }, [selectedGeolocation]);
+
+  useEffect(() => {
+    fetchDeliveryorders();
+  }, [selectedCustomer]);
 
   useEffect(() => {
     console.log("invoiceDetails:", invoiceDetails);
@@ -800,6 +823,45 @@ export default function Salesinvoice() {
                           {Formik.errors.status}
                         </p>
                       )}
+                    </Box>
+
+                    <Box>
+                      <FormControl fullWidth>
+                        <InputLabel id="deliveryorder-label">
+                          Select Delivery Order
+                        </InputLabel>
+
+                        <Select
+                          labelId="deliveryorder-label"
+                          multiple
+                          value={selectedDeliveryorders}
+                          onChange={(e) => {
+                            setSelectedDeliveryorders(e.target.value);
+                          }}
+                          renderValue={(selected) =>
+                            selected
+                              .map(
+                                (id) =>
+                                  deliveryorders.find(
+                                    (order) => order._id === id,
+                                  )?.siCode,
+                              )
+                              .join(", ")
+                          }
+                          label="Select Delivery Order"
+                        >
+                          {deliveryorders.map((order) => (
+                            <MenuItem key={order._id} value={order._id}>
+                              <Checkbox
+                                checked={selectedDeliveryorders.includes(
+                                  order._id,
+                                )}
+                              />
+                              {order.siCode}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Box>
 
                     {/* Remarks → full width */}
