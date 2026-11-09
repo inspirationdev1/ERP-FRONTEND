@@ -18,6 +18,7 @@ import {
   InputLabel,
   Autocomplete,
   Tabs,
+  Checkbox,
   Tab,
 } from "@mui/material";
 // import { Container, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography, Select, MenuItem, Alert, FormControl, InputLabel, Autocomplete, TextField, Box } from '@mui/material';
@@ -40,6 +41,9 @@ export default function Purchaseinvoice() {
 
   const [isPrint, setPrint] = useState(false);
   const [printId, setPrintId] = useState(null);
+
+  const [goodsreceived, setGoodsreceived] = useState([]);
+  const [selectedGoodsreceived, setSelectedGoodsreceived] = useState([]);
 
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState(null);
@@ -118,6 +122,23 @@ export default function Purchaseinvoice() {
       },
     ]);
     console.log("invoiceDetails", invoiceDetails);
+  };
+
+  const fetchGoodsreceived = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}/goodsreceived/fetch-with-query`,
+        {
+          params: {
+            supplier: selectedSupplier?._id,
+          },
+        },
+      );
+
+      setGoodsreceived(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching Goods Received records:", error);
+    }
   };
 
   const handleDelete = (id) => {
@@ -481,6 +502,15 @@ export default function Purchaseinvoice() {
   }, [message, params]);
 
   useEffect(() => {
+    if (selectedSupplier?._id) {
+      fetchGoodsreceived();
+    } else {
+      setGoodsreceived([]);
+      setSelectedGoodsreceived([]);
+    }
+  }, [selectedSupplier]);
+
+  useEffect(() => {
     fetchSuppliers();
   }, [selectedGeolocation]);
 
@@ -802,6 +832,46 @@ export default function Purchaseinvoice() {
                           {Formik.errors.status}
                         </p>
                       )}
+                    </Box>
+
+                    <Box>
+                      <FormControl fullWidth>
+                        <InputLabel id="goodsreceived-label">
+                          Select Goods Received
+                        </InputLabel>
+
+                        <Select
+                          labelId="goodsreceived-label"
+                          multiple
+                          value={selectedGoodsreceived}
+                          onChange={(e) => {
+                            setSelectedGoodsreceived(e.target.value);
+                          }}
+                          renderValue={(selected) =>
+                            selected
+                              .map(
+                                (id) =>
+                                  goodsreceived.find(
+                                    (record) => record._id === id,
+                                  )?.piCode,
+                              )
+                              .filter(Boolean)
+                              .join(", ")
+                          }
+                          label="Select Goods Received"
+                        >
+                          {goodsreceived.map((record) => (
+                            <MenuItem key={record._id} value={record._id}>
+                              <Checkbox
+                                checked={selectedGoodsreceived.includes(
+                                  record._id,
+                                )}
+                              />
+                              {record.piCode}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Box>
 
                     {/* Remarks → full width */}
