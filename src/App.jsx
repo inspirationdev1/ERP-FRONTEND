@@ -50,12 +50,8 @@ import SalesquotationPrint from "./company/components/salesquotation/Salesquotat
 import Salesorder from "./company/components/salesorder/Salesorder";
 import SalesorderPrint from "./company/components/salesorder/SalesorderPrint";
 
-
 import Deliveryorder from "./company/components/deliveryorder/Deliveryorder";
 import DeliveryorderPrint from "./company/components/deliveryorder/DeliveryorderPrint";
-
-
-
 
 import Receipts from "./company/components/receipts/Receipts";
 import ReceiptPrint from "./company/components/receipts/ReceiptPrint";
@@ -152,6 +148,15 @@ import PaidFeesReportPrint from "./school/components/reports/PaidFeesReportPrint
 import Purchaseinvoice from "./company/components/purchaseinvoices/Purchaseinvoices";
 import PurchaseinvoicePrint from "./company/components/purchaseinvoices/PurchaseinvoicePrint";
 
+import Purchasequotation from "./company/components/purchasequotation/Purchasequotation";
+import PurchasequotationPrint from "./company/components/purchasequotation/PurchasequotationPrint";
+
+import Purchaseorder from "./company/components/purchaseorder/Purchaseorder";
+import PurchaseorderPrint from "./company/components/purchaseorder/PurchaseorderPrint";
+
+import Goodsreceived from "./company/components/goodsreceived/Goodsreceived";
+import GoodsreceivedPrint from "./company/components/goodsreceived/GoodsreceivedPrint";
+
 import Supplierpayments from "./company/components/payments/Supplierpayments";
 import Payments from "./company/components/payments/Payments";
 import PaymentPrint from "./company/components/payments/PaymentPrint";
@@ -202,6 +207,10 @@ import SalesOrderListPrint from "./company/components/reports/SalesOrderListPrin
 import DeliveryOrderListPrint from "./company/components/reports/DeliveryOrderListPrint";
 
 import PurchaseInvoiceListPrint from "./company/components/reports/PurchaseInvoiceListPrint";
+import PurchaseQuotationListPrint from "./company/components/reports/PurchaseQuotationListPrint";
+
+import PurchaseOrderListPrint from "./company/components/reports/PurchaseOrderListPrint";
+import GoodsReceivedListPrint from "./company/components/reports/GoodsReceivedListPrint";
 import Userpermission from "./company/components/userpermission/Userpermission";
 import Rolepermission from "./company/components/rolepermission/Rolepermission";
 
@@ -244,15 +253,34 @@ function App() {
               />
 
               <Route path="salesorderprint" element={<SalesorderPrint />} />
-              <Route path="deliveryorderprint" element={<DeliveryorderPrint />} />
+              <Route
+                path="deliveryorderprint"
+                element={<DeliveryorderPrint />}
+              />
 
               <Route path="receipt" element={<Receipts />} />
               <Route path="receiptprint" element={<ReceiptPrint />} />
               <Route path="receiptprint_mms" element={<ReceiptPrint_MMS />} />
               <Route path="purchaseinvoice" element={<Purchaseinvoice />} />
+              <Route path="purchasequotation" element={<Purchasequotation />} />
+              <Route path="purchaseorder" element={<Purchaseorder />} />
+              <Route path="goodsreceived" element={<Goodsreceived />} />
+
               <Route
                 path="purchaseinvoiceprint"
                 element={<PurchaseinvoicePrint />}
+              />
+              <Route
+                path="purchasequotationprint"
+                element={<PurchasequotationPrint />}
+              />
+              <Route
+                path="purchaseorderprint"
+                element={<PurchaseorderPrint />}
+              />
+              <Route
+                path="goodsreceivedprint"
+                element={<goodsreceivedPrint />}
               />
               <Route path="supplierpayment" element={<Supplierpayments />} />
               <Route
@@ -325,6 +353,19 @@ function App() {
                 element={<PurchaseInvoiceListPrint />}
               />
 
+              <Route
+                path="purchasequotationlistprint"
+                element={<PurchaseQuotationListPrint />}
+              />
+
+              <Route
+                path="purchaseorderlistprint"
+                element={<PurchaseOrderListPrint />}
+              />
+              <Route
+                path="goodsreceivedlistprint"
+                element={<GoodsReceivedListPrint />}
+              />
               <Route path="customers" element={<Customers />} />
               <Route path="suppliers" element={<Suppliers />} />
               <Route path="employees" element={<Employees />} />

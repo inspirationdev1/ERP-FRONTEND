@@ -101,6 +101,9 @@ export default function Company() {
       icon: FormatListNumberedIcon,
       children: [
         { label: "Suppliers", link: "/company/suppliers" },
+        { label: "Purchase Quotation", link: "/company/purchasequotation" },
+        { label: "Purchase Order", link: "/company/purchaseorder" },
+        { label: "Goods Received", link: "/company/goodsreceived" },
         { label: "Purchase Invoice", link: "/company/purchaseinvoice" },
         { label: "Payments", link: "/company/supplierpayment" },
         { label: "Reports", link: "/company/purchasereports" },
